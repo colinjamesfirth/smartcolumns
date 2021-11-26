@@ -1,0 +1,234 @@
+<html>
+
+<head>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+
+<script>
+
+$(document).ready(function() {
+
+  $('tr[data-row-clickable]').on('click',function() {
+    row_name = $(this).attr('data-row-clickable');
+    alert('opened ' + row_name);
+  });
+
+  var table_data = [
+    ['Name','Gender','Hair','Eyes','Status','Town','Home','Job','Narative'],
+    ['Martin','Male','Blonde','Blue','Single','Bolton','Terrace','Builder','An amazing worker with brevity that would impress a lion'],
+    ['Julie','Female','Brown','Green','Married','Wigan','Detached','Accountant','If she can\'t add it, it\'s not worth adding'],
+    ['Rey','Non-binary','Silver','Blue','Single','Leigh','Flat','Driver','A nicer person you couldn\'t wish to meet'],
+    ['Jennifer','Female','Black','Brown','Civil Partnership','Huddersfield','Semi','Dentist','The best tooth MOT in Huddersfield']
+  ];
+
+  var counter = 0;
+  var table = '';
+
+  // make the table
+  table_data.forEach( function(r) {
+    if (counter == 0) {
+      output = '<tr>';
+      r.forEach( function(th) {
+        output += '<th>' + th + '</th>\n';
+      });
+      output += '<th data-column-selectable>\n</th>\n<th>Open</th>\n';
+      $('table#data thead').append(output);
+    } else {
+      output = '<tr data-row-clickable data-table-row="' + counter + '">';
+      col1_data = r[0];
+      r.forEach( function(td) {
+        output += '<td>' + td + '</td>\n';
+      });
+      output += '<td></td>\n<td><button data-open-button aria-label="Open record for ' + col1_data + '">Open</button></td>\n';
+      $('table#data tbody').append(output);
+    }
+    counter ++;
+  });
+
+
+  function clearColumnData() {
+    select_column_index = $('th[data-column-selectable]').index();
+    $('table#data tbody tr').each(function() {
+      $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')').empty();
+    });
+  }
+
+  function setColumnData(data_column) {
+    select_column_index = $('th[data-column-selectable]').index();
+    counter = 1;
+    $('select[data-column-selected]').find('option[data-choose]').remove();
+    $('table#data tbody tr').each(function() {
+      cell_data = table_data[counter][data_column];
+      $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')').text(cell_data);
+      counter ++;
+    });
+  }
+
+  function refreshColumnSelect() {
+    if ( $('select[data-column-selected]').length ) {
+      var selected = $('select[data-column-selected]').attr('data-column-selected');
+    } else {
+      var selected = 'auto';
+    }
+    if (selected == 'auto') {
+      var firstHidden = $("table#data thead th:hidden:first").index();
+      options = '';
+      if (firstHidden == -1) {
+        options +='<option data-choose aria-label="Choose the data for this column">Choose</option>\n';
+        clearColumnData();
+      }
+      table_data[0].forEach( function(th,i) {
+        var selected = '';
+        if (firstHidden == i) {
+          selected = ' selected';
+          setColumnData(i);
+        }
+        options += '<option value="' + i + '"' + selected + '>' + th + '</option>\n';
+      });
+      var column_select = '<select data-column-selected="auto" aria-label="Choose the data for this column">\n' + options + '</select>\n';
+      $('table#data th[data-column-selectable]').html(column_select);
+    }
+  }
+  refreshColumnSelect();
+  $(window).resize( function() {
+    refreshColumnSelect();
+  });
+
+
+  $('table#data').on('change','select[data-column-selected]',function() {
+    var data_column = $(this).val();
+    $(this).attr('data-column-selected',data_column);
+    setColumnData(data_column);
+  });
+
+  $('table#data td:not(:last-child), table#data button[data-open-button]').on('click',function() {
+    var dataIndex = $(this).closest('tr[data-row-clickable]').attr('data-table-row');
+    var dataCol1Value = table_data[dataIndex][0];
+    alert('open: ' + dataCol1Value);
+  });
+  $('table#data button[data-edit-button]').on('click',function() {
+    var dataIndex = $(this).closest('tr[data-row-clickable]').attr('data-table-row');
+    var dataCol1Value = table_data[dataIndex][0];
+    alert('edit: ' + dataCol1Value);
+  });
+
+
+  // end doc ready
+
+});
+
+</script>
+
+<style>
+
+  table.table-responsive {
+    table-layout: fixed;
+    border-collapse: collapse;
+    border: 1px solid grey;
+    width: 100%;
+  }
+  table caption {
+    background: #ccc;
+    padding: 1em;
+    text-align: left;
+    margin-bottom: 1em;
+  }
+  table.table-responsive th,
+  table.table-responsive td {
+    border-bottom: 1px solid grey;
+    padding: 1em 0.75em;
+    text-align: left;
+  }
+  table.table-responsive thead th,
+  table.table-responsive tbody tr:not(:hover) td:first-child {
+    background: #e5e5e5;
+  }
+
+  table.table-responsive th:last-child {
+    width: 10ch;
+  }
+
+  table.table-responsive th:not(:first-child),
+  table.table-responsive td:not(:first-child) {
+    border-left: 1px solid grey;
+  }
+  table.table-responsive tbody tr:hover {
+    background: yellow;
+  }
+
+  table.table-responsive tr[data-row-clickable] {
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 40rem) {
+    table.table-responsive th:nth-child(1n+2):not(:nth-last-of-type(-n+2)),
+    table.table-responsive td:nth-child(1n+2):not(:nth-last-of-type(-n+2)) {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 50rem) {
+    table.table-responsive th:nth-child(1n+3):not(:nth-last-of-type(-n+2)),
+    table.table-responsive td:nth-child(1n+3):not(:nth-last-of-type(-n+2)) {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 60rem) {
+    table.table-responsive th:nth-child(1n+4):not(:nth-last-of-type(-n+2)),
+    table.table-responsive td:nth-child(1n+4):not(:nth-last-of-type(-n+2)) {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 70rem) {
+    table.table-responsive th:nth-child(1n+5):not(:nth-last-of-type(-n+2)),
+    table.table-responsive td:nth-child(1n+5):not(:nth-last-of-type(-n+2)) {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 80rem) {
+    table.table-responsive th:nth-child(1n+6):not(:nth-last-of-type(-n+2)),
+    table.table-responsive td:nth-child(1n+6):not(:nth-last-of-type(-n+2)) {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 90rem) {
+    table.table-responsive th:nth-child(1n+7):not(:nth-last-of-type(-n+2)),
+    table.table-responsive td:nth-child(1n+7):not(:nth-last-of-type(-n+2)) {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 100rem) {
+    table.table-responsive th:nth-child(1n+8):not(:nth-last-of-type(-n+2)),
+    table.table-responsive td:nth-child(1n+8):not(:nth-last-of-type(-n+2)) {
+      display: none;
+    }
+  }
+
+
+  button,
+  select {
+    cursor: pointer;
+    padding: 0.75em 1em;
+  }
+  button:hover,
+  button:focus {
+    outline: 2px solid red;
+  }
+
+</style>
+
+</head>
+
+<body>
+  <h1>Responsive Table Columns Test</h1>
+  <p>This table hides columns from the right when space reduces, in increments of 10rem per column. Rows are clickable with a mouse for convenience, and (tested on Android Talkback), are double-tappable for assisted users. Assisted users can still get the content of the table. Keyboard users can use the 'Open button to open the record; the open button is also intuitive for sighted users, making the 'click on the whole row' a nice progressive enhancement.</p>
+
+  <table id="data" class="table-responsive">
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</body>
+
+</html>
