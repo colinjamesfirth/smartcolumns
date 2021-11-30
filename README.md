@@ -13,10 +13,11 @@ Displays only the columns that will fit in the available space by putting hidden
 - Allows for an infinite number of columns
 - Is fully responsive (works on big screens, on mobile and when zoomed)
 - Supports several standard column widths for different data types (e.g. small for integers, wide for narratives)
+- Is naturally accessible because the output is a particularly basic html table; additional accessibility provided on the select and button elements
 
 ## Behaviours
 - When the window is loaded or resized, columns hide and show depending on the space available to show columns at their minimum/preferred width. Columns that don't fit are hidden from right to left (making an assumption that the left-most column is the most important; the right least)
-- The first column is always show (making the assumption that the left-most column is the most important, and essentially acts as a row header)
+- The first column is always shown (making the assumption that the left-most column is the most important, and essentially acts as a row header)
 - If the user hasn't yet manually selected data for the selectable column, if none of the hideable columns can be shown (so only the first, selectable and actions columns), we automatically make the selectable column have the data from the first hidden column. This avoids showing an empty column on smaller windows. If the window resizes and more columns can show, the selectable column reverts to blank
 - If the user has manually selected data for the selectable column, then the column retains that selection even if the window resizes, or all hideable columns are hidden.
 
