@@ -1,120 +1,16 @@
 <html>
-
-<head>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
-  <script type="text/javascript" src="javascript.js"></script>
-
-<style>
-
-  html {
-    font-size: 14px;
-  }
-  body {
-    font-size: inherit;
-    box-sizing: border-box;
-  }
-  table {
-    font-size: 1rem;
-  }
-
-  table.table-responsive {
-    border-collapse: collapse;
-    border: 1px solid grey;
-    width: 100%;
-    max-width: 100%;
-    text-align: left;
-  }
-
-  table.table-responsive thead th {
-    background: #e5e5e5;
-  }
-
-  table.table-responsive th,
-  table.table-responsive td {
-    padding: 1rem 0.75rem;
-    box-sizing: border-box;
-    border-bottom: 1px solid grey;
-
-  }
-
-  table.table-responsive [data-display-wrap] {
-    word-break: break-word;
-    overflow-wrap: break-word;
-  }
-  table.table-responsive [data-display-center] {
-    text-align: center;
-  }
-
-  table.table-responsive th:not(:first-child),
-  table.table-responsive td:not(:first-child) {
-    border-left: 1px solid grey;
-  }
-
-  table.table-responsive th,
-  table.table-responsive th[data-column-size="0"] {
-    width: auto;
-  }
-  table.table-responsive th[data-column-size="1"] {
-    width: 3rem;
-  }
-  table.table-responsive th[data-column-size="2"] {
-    width: 10rem;
-  }
-  table.table-responsive th[data-column-size="3"] {
-    width: 15rem;
-  }
-
-  table.table-responsive tbody tr:hover {
-    background: yellow;
-  }
-
-  table.table-responsive tr[data-row-clickable] {
-    cursor: pointer;
-  }
-
-  table.table-responsive .actions-column span {
-    display: inline-flex;
-    justify-content: space-between;
-    gap: 0.5em;
-  }
-
-  button,
-  select {
-    cursor: pointer;
-    padding: 0.75rem 0.5rem;
-    font-size: 1rem;
-    max-width: 100%;
-    text-overflow: ellipsis;
-    box-sizing: border-box;
-    outline: 0;
-    border: 1px solid #333;
-    background: white;
-  }
-
-  button:hover,
-  button:focus {
-    background: #666666;
-    color: white;
-    outline: 0;
-    border: 1px solid #333;
-  }
-
-</style>
-
-</head>
-
-<body>
-  <h1>Responsive Table Demo</h1>
-
-  <div class="table-container">
-    <table id="data" class="table-responsive">
-      <tbody>
-      </tbody>
-    </table>
-  </div>
-
-</body>
-
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="javascript.js"></script>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="table-container">
+      <table id="data" class="table-responsive">
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </body>
 </html>
