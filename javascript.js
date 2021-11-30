@@ -1,9 +1,12 @@
 $(document).ready(function() {
 
+  var target = 'table#data';
+
+  /* Set some basic styling variables, reflecting what's in the stylesheet */
   var baseRemPX = 14; //px
   var cellXPadding = 0.75; //rem
-  var responsiveTableBreakpointSmallTable = 40; //rem;
 
+  /* Set the different basic column widths for the column hiding calculations, reflecting what's in the stylesheet */
   var table_column_widths = [
     //[sizeIndex, Xrem],
     ['0','0'],
@@ -12,12 +15,7 @@ $(document).ready(function() {
     ['3','15']
   ];
 
-  $('tr[data-row-clickable]').on('click',function() {
-    row_name = $(this).attr('data-row-clickable');
-    alert('opened ' + row_name);
-  });
-
-
+  /* Set the column characteristics */
   var table_columns = [
     //ColumnName,ColumnWidthIndex,DataWrap,DataCenter
     ['Name',2,false,false],
@@ -31,6 +29,8 @@ $(document).ready(function() {
     ['Job',2,false,false],
     ['Narrative',3,true,false]
   ];
+
+  /* Define the row data */
   var table_rows = [
     ['Martin','martin.brown@mycompany.com','Male','Blonde','Blue','24','Single','Bolton','Builder','An amazing worker with brevity that would impress a lion'],
     ['Julie','julie.burshendasser@mycompany.com','Female','Brown','Green','62','Married','Wigan','Accountant','If she can\'t add it, it\'s not worth adding'],
@@ -38,10 +38,9 @@ $(document).ready(function() {
     ['Jennifer','jennifer.sundance@mycompany.com','Female','Black','Brown','31','Civil Partnership','Huddersfield','Dentist','The best tooth MOT in Huddersfield']
   ];
 
-  var table = '';
-
-  function makeTableHeader(target) {
-    output = '<thead>\n<tr>';
+  /* Build the table header */
+  (function() {
+    var output = '<thead>\n<tr>';
     table_columns.forEach( function(th) {
       var isWrap = '';
       if (th[2] == true) {
@@ -53,13 +52,12 @@ $(document).ready(function() {
       }
         output += '<th data-column-size="' + th[1] + '"' + isWrap + isCenter + '>' + th[0] + '</th>\n';
     });
-    output += '<th data-column-selectable data-column-size="2">\n</th>\n<th class="actions-column">Actions</th>\n';
     output += '</tr>\n</thead>\n';
     $(target).append(output);
-  }
-  makeTableHeader('table#data');
+  })();
 
-  function makeTableBody(target) {
+  /* Build the table body */
+  (function() {
     var row_counter = 0;
     var output = '<tbody>\n';
     table_rows.forEach( function(r) {
@@ -83,11 +81,29 @@ $(document).ready(function() {
     });
     output += '</tbody>\n';
     $(target).append(output);
-  }
-  makeTableBody('table#data');
+  })();
 
-  function makeActionsColumn(target) {
-    col1_data = 'chips';
+  /* Build the selectable column */
+  (function() {
+    $(target).find('thead tr').append('<th data-column-selectable data-column-size="2"></th>\n');
+    var firstHidden = $("table#data thead th:hidden:first").index();
+    options = '';
+    table_columns.forEach( function(th,i) {
+      options += '<option value="' + i + '">' + th[0] + '</option>\n';
+    });
+    $('table#data tbody tr').each( function() {
+      $(this).append('<td></td>\n');
+    });
+    var column_select = '<select data-column-selected="auto" aria-label="Choose the data for this column">\n' + options + '</select>\n';
+    $('table#data th[data-column-selectable]').html(column_select);
+  })();
+
+  /* Build the actions column */
+  /* Sets the width of the column based on how wide the contents are, giving it a width appropriate to the number of buttons being shown for this particular table */
+  (function() {
+    $(target).find('thead tr').append('<th class="actions-column">Actions</th>\n');
+
+    var col1_data = 'chips';
     var output = '<td class="actions-column"><span>';
     output += '<button data-open-button aria-label="Open record for ' + col1_data + '">Open</button>';
     //output += '<button data-edit-button aria-label="Edit record for ' + col1_data + '">Edit</button>';
@@ -101,15 +117,15 @@ $(document).ready(function() {
     var actionsWidth = $('table#data tbody tr:first-child .actions-column > span').width();
     actionsWidth = actionsWidth + ((cellXPadding * baseRemPX) * 2);
     $('table#data thead .actions-column').css('width',actionsWidth).attr('data-actions-col-width',actionsWidth);
-  }
+  })();
 
+  /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
   function hideDataColumns() {
     widthTable = $('table#data').outerWidth();
     widthContainer = $('table#data').closest('.table-container').outerWidth();
     widthSelectColumn = $('table#data th[data-column-selectable]').attr('data-column-size');
     widthSelectColumn = table_column_widths[widthSelectColumn][1];
     widthSelectColumn = (widthSelectColumn * baseRemPX) + 1;
-
     widthActionsColumn = 188;
     widthTableAvailable = widthContainer - (widthSelectColumn + widthActionsColumn);
     var counter = 1;
@@ -119,7 +135,6 @@ $(document).ready(function() {
       cellWidth = $(this).attr('data-column-size');
       cellWidth = table_column_widths[cellWidth][1];
       cellWidth = (cellWidth * baseRemPX) + 1;
-
       sum += cellWidth;
       if (sum > widthTableAvailable) {
         $(this).hide();
@@ -136,8 +151,32 @@ $(document).ready(function() {
       counter ++;
     });
   }
+  hideDataColumns();
+  $(window).resize( function() {
+    hideDataColumns();
+  });
 
-  function clearColumnData() {
+  /* Automatically set the selectable column */
+  /* If all columns (exclusing the first) are hidden then show the first hidden column's data instead of a blank column; then make it blank again if the window size increases and more columns can show. But, if the user selects data for the selectable column, then that selection persists. Run at page load and on window resize */
+  function selectableColumn_auto() {
+    var data = $('select[data-column-selected]').attr('data-column-selected');
+    $('select[data-column-selected] option[data-choose]').remove();
+    if ( data == 'auto') {
+      if ( $('table#data thead th:nth-child(2)').is(":hidden") ) {
+        selectableColumn_set(1);
+      } else {
+        selectableColumn_clear();
+        $('select[data-column-selected]').prepend('<option data-choose value="auto" aria-label="Choose the data for this column" selected>Choose</option>\n');
+      }
+    }
+  }
+  selectableColumn_auto();
+  $(window).resize( function() {
+    selectableColumn_auto();
+  });
+
+  /* Clear the selectable column if we need to */
+  function selectableColumn_clear() {
     select_column_index = $('th[data-column-selectable]').index();
     $('select[data-column-selected] option[data-choose]').prop('selected', true);
     $('table#data tbody tr').each(function() {
@@ -145,11 +184,12 @@ $(document).ready(function() {
     });
   }
 
-  function setColumnData(data_column) {
+  /* Sets the selectable column's data when we need to put data into it */
+  function selectableColumn_set(data_column) {
     select_column_index = $('th[data-column-selectable]').index();
     counter = 0;
     if (data_column == 'auto') {
-      clearColumnData();
+      selectableColumn_clear();
     }
     $('select[data-column-selected] option[value="' + data_column + '"]').prop('selected', true);
     $('table#data tbody tr').each(function() {
@@ -164,55 +204,28 @@ $(document).ready(function() {
     });
   }
 
-  function autoColumn() {
-    var data = $('select[data-column-selected]').attr('data-column-selected');
-    $('select[data-column-selected] option[data-choose]').remove();
-    if ( data == 'auto') {
-      if ( $('table#data thead th:nth-child(2)').is(":hidden") ) {
-        setColumnData(1);
-      } else {
-        clearColumnData();
-        $('select[data-column-selected]').prepend('<option data-choose value="auto" aria-label="Choose the data for this column" selected>Choose</option>\n');
-      }
-    }
-  }
-
-  function makeColumnSelect() {
-    var firstHidden = $("table#data thead th:hidden:first").index();
-    options = '';
-    table_columns.forEach( function(th,i) {
-      options += '<option value="' + i + '">' + th[0] + '</option>\n';
-    });
-    $('table#data tbody tr').each( function() {
-      $(this).append('<td></td>\n');
-    });
-    var column_select = '<select data-column-selected="auto" aria-label="Choose the data for this column">\n' + options + '</select>\n';
-    $('table#data th[data-column-selectable]').html(column_select);
-  }
-
-  makeColumnSelect();
-  makeActionsColumn();
-  hideDataColumns();
-  autoColumn();
-
-  $(window).resize( function() {
-    hideDataColumns();
-    autoColumn();
-  });
-
-
+  /* When user manually selects data for the selectable column... */
   $('table#data').on('change','select[data-column-selected]',function() {
     var data_column = $(this).val();
     $(this).attr('data-column-selected',data_column);
-    setColumnData(data_column);
+    selectableColumn_set(data_column);
     $('select[data-column-selected]').find('option[data-choose]').remove();
   });
 
+  /* Makes the whole row clickable */
+  $('tr[data-row-clickable]').on('click',function() {
+    row_name = $(this).attr('data-row-clickable');
+    alert('opened ' + row_name); //replace with something proper
+  });
+
+  /* On click event for the open button in the actions column (if we have one) */
   $('table#data td:not(:last-child), table#data button[data-open-button]').on('click',function() {
     var dataIndex = $(this).closest('tr[data-row-clickable]').attr('data-table-row');
     var dataCol1Value = table_rows[dataIndex][0];
     alert('open: ' + dataCol1Value);
   });
+
+  /* On click event for the edit button in the actions column (if we have one) */
   $('table#data button[data-edit-button]').on('click',function() {
     var dataIndex = $(this).closest('tr[data-row-clickable]').attr('data-table-row');
     var dataCol1Value = table_rows[dataIndex][0];
