@@ -15,37 +15,42 @@
     font-size: inherit;
     box-sizing: border-box;
   }
-
-  div.table-container {
-    outline: 2px dashed red;
-  }
   table {
     font-size: 1rem;
   }
 
   table.table-responsive {
-    table-layout: fixed;
     border-collapse: collapse;
     border: 1px solid grey;
     width: 100%;
     max-width: 100%;
+    text-align: left;
+  }
+
+  table.table-responsive thead th {
+    background: #e5e5e5;
   }
 
   table.table-responsive th,
   table.table-responsive td {
     padding: 1rem 0.75rem;
     box-sizing: border-box;
-
     border-bottom: 1px solid grey;
-    text-align: left;
+
   }
 
-  table.table-responsive thead th,
-  table.table-responsive tbody tr:not(:hover) td:first-child {
-    background: #e5e5e5;
+  table.table-responsive [data-display-wrap] {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  table.table-responsive [data-display-center] {
+    text-align: center;
   }
 
-
+  table.table-responsive th:not(:first-child),
+  table.table-responsive td:not(:first-child) {
+    border-left: 1px solid grey;
+  }
 
   table.table-responsive th,
   table.table-responsive th[data-column-size="0"] {
@@ -60,21 +65,7 @@
   table.table-responsive th[data-column-size="3"] {
     width: 15rem;
   }
-  table.table-responsive th[data-column-selectable] {
-    width: 10rem;
-  }
-  table.table-responsive th:last-child {
-    width: 10ch;
-  }
 
-
-
-
-
-  table.table-responsive th:not(:first-child),
-  table.table-responsive td:not(:first-child) {
-    border-left: 1px solid grey;
-  }
   table.table-responsive tbody tr:hover {
     background: yellow;
   }
@@ -83,20 +74,10 @@
     cursor: pointer;
   }
 
-  /* makes it simple for very narrow screens, by effectively only showing three columns */
-  @media screen and (max-width: 40rem) {
-    div.table-container {
-      outline-color: green;
-    }
-
-    table.table-responsive th:nth-child(1n+2):not(:nth-last-of-type(-n+2)),
-    table.table-responsive td:nth-child(1n+2):not(:nth-last-of-type(-n+2)) {
-      display: none;
-    }
-    table.table-responsive th:nth-child(1),
-    table.table-responsive th[data-column-selectable] {
-      //width: auto;
-    }
+  table.table-responsive .actions-column span {
+    display: inline-flex;
+    justify-content: space-between;
+    gap: 0.5em;
   }
 
   button,
@@ -106,11 +87,18 @@
     font-size: 1rem;
     max-width: 100%;
     text-overflow: ellipsis;
+    box-sizing: border-box;
+    outline: 0;
+    border: 1px solid #333;
+    background: white;
   }
 
   button:hover,
   button:focus {
-    outline: 2px solid red;
+    background: #666666;
+    color: white;
+    outline: 0;
+    border: 1px solid #333;
   }
 
 </style>
