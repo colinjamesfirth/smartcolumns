@@ -85,15 +85,13 @@ $(document).ready(function() {
   /* Sets the width of the column based on how wide the contents are, giving it a width appropriate to the number of buttons being shown for this particular table */
   (function() {
     $(target).find('thead tr').append('<th class="actions-column" aria-label="Actions"></th>\n');
-
-    var col1_data = 'chips';
-    var output = '<td class="actions-column"><span>';
-    output += '<button data-open-button aria-label="Open record for ' + col1_data + '">Open</button>';
-    //output += '<button data-edit-button aria-label="Edit record for ' + col1_data + '">Edit</button>';
-    //output += '<button data-delete-button aria-label="Delete record for ' + col1_data + '">Delete</button>';
-    output += '</span></td>\n';
-
     $('table#data tbody tr').each( function() {
+      var col1_data = $(this).find('td:first-child').text();
+      var output = '<td class="actions-column"><span>';
+      output += '<button data-open-button aria-label="Open record for ' + col1_data + '">Open</button>';
+      //output += '<button data-edit-button aria-label="Edit record for ' + col1_data + '">Edit</button>';
+      //output += '<button data-delete-button aria-label="Delete record for ' + col1_data + '">Delete</button>';
+      output += '</span></td>\n';
       $(this).append(output);
     });
 
