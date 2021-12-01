@@ -10,10 +10,16 @@ $(document).ready(function() {
   var table_column_widths = [
     //[sizeIndex, Xrem],
     ['0','0'],
-    ['1','3'],
+    ['1','5'],
     ['2','10'],
     ['3','15']
   ];
+
+  w = [];
+  table_columns.forEach(function(i) {
+    w.push(i[1]);
+  });
+  const widestColumn = Math.max(...[].concat(...w));
 
     /* Build the table header */
   (function() {
@@ -62,12 +68,6 @@ $(document).ready(function() {
 
   /* Build the selectable column */
   (function() {
-    w = [];
-    table_columns.forEach(function(i) {
-      w.push(i[1]);
-    });
-    const widestColumn = Math.max(...[].concat(...w));
-
     $(target).find('thead tr').append('<th data-column-selectable data-column-size="' + widestColumn + '"></th>\n');
     var firstHidden = $("table#data thead th:hidden:first").index();
     options = '';
@@ -84,7 +84,7 @@ $(document).ready(function() {
   /* Build the actions column */
   /* Sets the width of the column based on how wide the contents are, giving it a width appropriate to the number of buttons being shown for this particular table */
   (function() {
-    $(target).find('thead tr').append('<th class="actions-column">Actions</th>\n');
+    $(target).find('thead tr').append('<th class="actions-column" aria-label="Actions"></th>\n');
 
     var col1_data = 'chips';
     var output = '<td class="actions-column"><span>';
@@ -97,7 +97,7 @@ $(document).ready(function() {
       $(this).append(output);
     });
 
-    var actionsWidth = $('table#data tbody tr:first-child .actions-column > span').width();
+    actionsWidth = $('table#data tbody tr:first-child .actions-column > span').width();
     actionsWidth = actionsWidth + ((cellXPadding * baseRemPX) * 2);
     $('table#data thead .actions-column').css('width',actionsWidth).attr('data-actions-col-width',actionsWidth);
   })();
@@ -106,17 +106,19 @@ $(document).ready(function() {
   function hideDataColumns() {
     widthTable = $('table#data').outerWidth();
     widthContainer = $('table#data').closest('.table-container').outerWidth();
-    widthSelectColumn = table_column_widths[3][1];
-    widthSelectColumn = (widthSelectColumn * baseRemPX) + 1;
-    widthActionsColumn = 188;
-    widthTableAvailable = widthContainer - (widthSelectColumn + widthActionsColumn);
+    widthFirstColumn = table_columns[0][1];
+    widthFirstColumn = table_column_widths[widthFirstColumn][1] * baseRemPX + 1;
+    widthSelectColumn = (table_column_widths[widestColumn][1] * baseRemPX) + 1;
+    widthActionsColumn = actionsWidth;
+    widthTableAvailable = widthContainer - (widthFirstColumn + widthSelectColumn + widthActionsColumn);
+    console.log(widthFirstColumn);
     var counter = 1;
     var sum = 0;
 
     $('table#data thead th:not(:first-child):not(:nth-last-of-type(-n+2))').each( function() {
-      cellWidth = $(this).attr('data-column-size');
-      cellWidth = table_column_widths[cellWidth][1];
-      cellWidth = (cellWidth * baseRemPX) + 1;
+      columnSize = $(this).attr('data-column-size');
+      columnWidth = table_column_widths[columnSize][1];
+      cellWidth = (columnWidth * baseRemPX) + 1;
       sum += cellWidth;
       if (sum > widthTableAvailable) {
         $(this).hide();
@@ -214,6 +216,7 @@ $(document).ready(function() {
     var dataCol1Value = table_rows[dataIndex][0];
     alert('edit: ' + dataCol1Value);
   });
+
 
   // end doc ready
 });
