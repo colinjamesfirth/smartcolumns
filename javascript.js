@@ -195,14 +195,8 @@ $(document).ready(function() {
     $('select[data-column-selected]').find('option[data-choose]').remove();
   });
 
-  /* Makes the whole row clickable */
-  $('tr[data-row-clickable]').on('click',function() {
-    row_name = $(this).attr('data-row-clickable');
-    alert('opened ' + row_name); //replace with something proper
-  });
-
   /* On click event for the open button in the actions column (if we have one) */
-  $('table#data td:not(:last-child), table#data button[data-open-button]').on('click',function() {
+  $('table#data tr[data-row-clickable] td:not(:last-child), table#data button[data-open-button]').on('click',function() {
     var dataIndex = $(this).closest('tr[data-row-clickable]').attr('data-table-row');
     var dataCol1Value = table_rows[dataIndex][0];
     alert('open: ' + dataCol1Value);
