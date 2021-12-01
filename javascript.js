@@ -85,7 +85,7 @@ $(document).ready(function() {
 
   /* Build the selectable column */
   (function() {
-    $(target).find('thead tr').append('<th data-column-selectable data-column-size="2"></th>\n');
+    $(target).find('thead tr').append('<th data-column-selectable data-column-size="3"></th>\n');
     var firstHidden = $("table#data thead th:hidden:first").index();
     options = '';
     table_columns.forEach( function(th,i) {
@@ -167,7 +167,7 @@ $(document).ready(function() {
         $('select[data-column-selected]').prepend('<option data-choose value="auto" aria-label="Choose the data for this column" selected>Choose...</option>\n');
       } else {
         var firstHidden = $('table#data thead th:hidden:first').index();
-        selectableColumn_set(firstHidden,true);
+        selectableColumn_set(firstHidden);
       }
     }
   }
@@ -186,14 +186,14 @@ $(document).ready(function() {
   }
 
   /* Sets the selectable column's data when we need to put data into it */
-  function selectableColumn_set(data_column, animate) {
+  function selectableColumn_set(data_column) {
     select_column_index = $('th[data-column-selectable]').index();
     counter = 0;
     if (data_column == 'auto') {
       selectableColumn_clear();
     }
     $('select[data-column-selected] option[value="' + data_column + '"]').prop('selected', true);
-    $('table#data tbody tr').each(function() {
+        $('table#data tbody tr').each(function() {
       targetTD = $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')');
       cell_data = table_rows[counter][data_column];
       targetTD.removeAttr('data-column-wrap');
@@ -209,7 +209,7 @@ $(document).ready(function() {
   $('table#data').on('change','select[data-column-selected]',function() {
     var data_column = $(this).val();
     $(this).attr('data-column-selected',data_column);
-    selectableColumn_set(data_column,false);
+    selectableColumn_set(data_column);
     $('select[data-column-selected]').find('option[data-choose]').remove();
   });
 
