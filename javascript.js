@@ -62,7 +62,13 @@ $(document).ready(function() {
 
   /* Build the selectable column */
   (function() {
-    $(target).find('thead tr').append('<th data-column-selectable data-column-size="3"></th>\n');
+    w = [];
+    table_columns.forEach(function(i) {
+      w.push(i[1]);
+    });
+    const widestColumn = Math.max(...[].concat(...w));
+
+    $(target).find('thead tr').append('<th data-column-selectable data-column-size="' + widestColumn + '"></th>\n');
     var firstHidden = $("table#data thead th:hidden:first").index();
     options = '';
     table_columns.forEach( function(th,i) {
@@ -100,8 +106,6 @@ $(document).ready(function() {
   function hideDataColumns() {
     widthTable = $('table#data').outerWidth();
     widthContainer = $('table#data').closest('.table-container').outerWidth();
-    //widthSelectColumn = $('table#data th[data-column-selectable]').attr('data-column-size');
-    //widthSelectColumn = table_column_widths[widthSelectColumn][1];
     widthSelectColumn = table_column_widths[3][1];
     widthSelectColumn = (widthSelectColumn * baseRemPX) + 1;
     widthActionsColumn = 188;
@@ -171,7 +175,6 @@ $(document).ready(function() {
       selectableColumn_clear();
     }
     $('select[data-column-selected] option[value="' + data_column + '"]').prop('selected', true);
-    //$('th[data-column-selectable]').attr('data-column-size',table_columns[data_column][1]);
     $('table#data tbody tr').each(function() {
       targetTD = $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')');
       cell_data = table_rows[counter][data_column];
@@ -214,3 +217,4 @@ $(document).ready(function() {
 
   // end doc ready
 });
+
