@@ -171,7 +171,7 @@ $(document).ready(function() {
       selectableColumn_clear();
     }
     $('select[data-column-selected] option[value="' + data_column + '"]').prop('selected', true);
-    $('th[data-column-selectable]').attr('data-column-size',table_columns[data_column][1]);
+    //$('th[data-column-selectable]').attr('data-column-size',table_columns[data_column][1]);
     $('table#data tbody tr').each(function() {
       targetTD = $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')');
       cell_data = table_rows[counter][data_column];
