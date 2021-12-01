@@ -22,6 +22,7 @@ table.table-responsive thead th {
   background: #e5e5e5;
 }
 
+
 table.table-responsive th,
 table.table-responsive td {
   padding: 1rem 0.75rem;
@@ -68,6 +69,10 @@ table.table-responsive .actions-column span {
   display: inline-flex;
   justify-content: space-between;
   gap: 0.5em;
+}
+
+table.table-responsive thead select {
+  font-weight: bold;
 }
 
 button,

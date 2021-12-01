@@ -162,11 +162,12 @@ $(document).ready(function() {
     var data = $('select[data-column-selected]').attr('data-column-selected');
     $('select[data-column-selected] option[data-choose]').remove();
     if ( data == 'auto') {
-      if ( $('table#data thead th:nth-child(2)').is(":hidden") ) {
-        selectableColumn_set(1);
-      } else {
+      if ( $('table#data thead th:nth-last-child(3)').is(":visible") ) {
         selectableColumn_clear();
-        $('select[data-column-selected]').prepend('<option data-choose value="auto" aria-label="Choose the data for this column" selected>Choose</option>\n');
+        $('select[data-column-selected]').prepend('<option data-choose value="auto" aria-label="Choose the data for this column" selected>Choose...</option>\n');
+      } else {
+        var firstHidden = $('table#data thead th:hidden:first').index();
+        selectableColumn_set(firstHidden,true);
       }
     }
   }
@@ -185,7 +186,7 @@ $(document).ready(function() {
   }
 
   /* Sets the selectable column's data when we need to put data into it */
-  function selectableColumn_set(data_column) {
+  function selectableColumn_set(data_column, animate) {
     select_column_index = $('th[data-column-selectable]').index();
     counter = 0;
     if (data_column == 'auto') {
@@ -195,11 +196,11 @@ $(document).ready(function() {
     $('table#data tbody tr').each(function() {
       targetTD = $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')');
       cell_data = table_rows[counter][data_column];
-      targetTD.text(cell_data);
       targetTD.removeAttr('data-column-wrap');
       if (table_columns[data_column][2] == true) {
         targetTD.attr('data-display-wrap','');
       }
+      targetTD.text(cell_data);
       counter ++;
     });
   }
@@ -208,7 +209,7 @@ $(document).ready(function() {
   $('table#data').on('change','select[data-column-selected]',function() {
     var data_column = $(this).val();
     $(this).attr('data-column-selected',data_column);
-    selectableColumn_set(data_column);
+    selectableColumn_set(data_column,false);
     $('select[data-column-selected]').find('option[data-choose]').remove();
   });
 
