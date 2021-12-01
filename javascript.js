@@ -15,30 +15,7 @@ $(document).ready(function() {
     ['3','15']
   ];
 
-  /* Set the column characteristics */
-  var table_columns = [
-    //ColumnName,ColumnWidthIndex,DataWrap,DataCenter
-    ['Name',2,false,false],
-    ['Email',3,true,false],
-    ['Gender',2,false,false],
-    ['Hair',2,false,false],
-    ['Eyes',2,false,false],
-    ['Age',1,false,true],
-    ['Status',2,false,false],
-    ['Town',2,false,false],
-    ['Job',2,false,false],
-    ['Narrative',3,true,false]
-  ];
-
-  /* Define the row data */
-  var table_rows = [
-    ['Martin','martin.brown@mycompany.com','Male','Blonde','Blue','24','Single','Bolton','Builder','An amazing worker with brevity that would impress a lion'],
-    ['Julie','julie.burshendasser@mycompany.com','Female','Brown','Green','62','Married','Wigan','Accountant','If she can\'t add it, it\'s not worth adding'],
-    ['Rey','rey.bassy-carrington-jones@mycompany.com','Non-binary','Silver','Blue','42','Single','Leigh','Driver','A nicer person you couldn\'t wish to meet (thisisareallylongwordjustfortesting)'],
-    ['Jennifer','jennifer.sundance@mycompany.com','Female','Black','Brown','31','Civil Partnership','Huddersfield','Dentist','The best tooth MOT in Huddersfield']
-  ];
-
-  /* Build the table header */
+    /* Build the table header */
   (function() {
     var output = '<thead>\n<tr>';
     table_columns.forEach( function(th) {
@@ -123,8 +100,9 @@ $(document).ready(function() {
   function hideDataColumns() {
     widthTable = $('table#data').outerWidth();
     widthContainer = $('table#data').closest('.table-container').outerWidth();
-    widthSelectColumn = $('table#data th[data-column-selectable]').attr('data-column-size');
-    widthSelectColumn = table_column_widths[widthSelectColumn][1];
+    //widthSelectColumn = $('table#data th[data-column-selectable]').attr('data-column-size');
+    //widthSelectColumn = table_column_widths[widthSelectColumn][1];
+    widthSelectColumn = table_column_widths[3][1];
     widthSelectColumn = (widthSelectColumn * baseRemPX) + 1;
     widthActionsColumn = 188;
     widthTableAvailable = widthContainer - (widthSelectColumn + widthActionsColumn);
@@ -193,7 +171,8 @@ $(document).ready(function() {
       selectableColumn_clear();
     }
     $('select[data-column-selected] option[value="' + data_column + '"]').prop('selected', true);
-        $('table#data tbody tr').each(function() {
+    $('th[data-column-selectable]').attr('data-column-size',table_columns[data_column][1]);
+    $('table#data tbody tr').each(function() {
       targetTD = $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')');
       cell_data = table_rows[counter][data_column];
       targetTD.removeAttr('data-column-wrap');
