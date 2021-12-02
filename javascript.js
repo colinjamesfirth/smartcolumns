@@ -75,21 +75,27 @@ $(document).ready(function() {
       columnWidthNormal: 10, //rem
       columnWidthWide: 15, //rem
       ignoreFirstColumn: true,
-      ignoreLastColumn: true
+      hasActionsColumn: true
     }
     o = { ...optionDefaults, ...(options || {}) };
 
+    /* Wrap the target table in a block level div so we can measure the width of the containing space (also used for CSS selectors) */
+    $(target).wrap('<div class="table-container"></div>');
+
     /* Build the selectable column */
     (function() {
-      $(target).find('thead tr th.actions-column').before('<th data-column-selectable></th>\n');
+
+      var insertSelectAfterNth = (o.hasActionsColumn === 'true') ? '1' :'2';
+
+      $(target).find('thead tr th:nth-last-of-type(' + insertSelectAfterNth + ')').after('<th data-column-selectable></th>\n');
 
       var firstHidden = $(target).find("thead th:hidden:first").index();
       options = '';
       table_columns.forEach( function(th,i) {
         options += '<option value="' + i + '">' + th[0] + '</option>\n';
       });
-      $(target).find('tbody tr td.actions-column').each( function() {
-        $(this).before('<td></td>\n');
+      $(target).find('tbody tr td:nth-last-of-type(' + insertSelectAfterNth + ')').each( function() {
+        $(this).after('<td></td>\n');
       });
       var column_select = '<select data-column-selected="auto" aria-label="Choose the data for this column">\n' + options + '</select>\n';
       $(target).find('th[data-column-selectable]').html(column_select);
@@ -102,48 +108,46 @@ $(document).ready(function() {
       });
     })();
 
-    /* Wrap the target table in a block level div so we can measure the width of the containing space (also used for CSS selectors) */
-    $(target).wrap('<div class="table-container"></div>');
-
-
-    actionsWidth = $(target).find('tbody tr:first-child .actions-column > span').width();
-    actionsWidth = actionsWidth + ((o.cellXPadding * o.baseRemPX) * 2);
-    $(target).find('thead .actions-column').css('width',actionsWidth).attr('data-actions-col-width',actionsWidth);
-
     /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
-    function hideDataColumns(target,baseRemPX) {
+    function hideDataColumns(target,o) {
       widthTable = $(target).outerWidth();
       widthContainer = $(target).closest('.table-container').outerWidth();
 
-      widthFirstColumn = table_columns[0][1];
+      var widthFirstColumn = table_columns[0][1];
       if (widthFirstColumn == 'auto') {
-        widthFirstColumn = (o.columnWidthNormal * baseRemPX) + 1;
+        widthFirstColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
       }
       else if (widthFirstColumn == 'narrow') {
-        widthFirstColumn = (o.columnWidthNarrow * baseRemPX) + 1;
+        widthFirstColumn = (o.columnWidthNarrow * o.baseRemPX) + 1;
       }
       else if (widthFirstColumn == 'normal') {
-        widthFirstColumn = (o.columnWidthNormal * baseRemPX) + 1;
+        widthFirstColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
       }
       else if (widthFirstColumn == 'wide') {
-        widthFirstColumn = (o.columnWidthWide * baseRemPX) + 1;
+        widthFirstColumn = (o.columnWidthWide * o.baseRemPX) + 1;
       }
 
       var widestColumn = null;
       if ( $(target).find('thead th[data-column-size="wide"]').length ) {
-        widestColumn = (o.columnWidthWide * baseRemPX) + 1;
+        widestColumn = (o.columnWidthWide * o.baseRemPX) + 1;
       }
       else if ( $(target).find('thead th[data-column-size="normal"]').length ) {
-        widestColumn = (o.columnWidthNormal * baseRemPX) + 1;
+        widestColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
       }
       else if ( $(target).find('thead th[data-column-size="narrow"]').length ) {
-        widestColumn = (o.columnWidthNarrow * baseRemPX) + 1;
+        widestColumn = (o.columnWidthNarrow * o.baseRemPX) + 1;
       }
       else if ( $(target).find('thead th[data-column-size="auto"]').length ) {
-        widestColumn = (o.columnWidthNormal * baseRemPX) + 1;
+        widestColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
       }
 
-      widthActionsColumn = actionsWidth;
+      var widthActionsColumn = 0;
+      if (o.hasActionsColumn === true) {
+        widthActionsColumn = $(target).find('tbody tr:first-child .actions-column > span').width();
+        widthActionsColumn = widthActionsColumn + ((o.cellXPadding * o.baseRemPX) * 2);
+        $(target).find('thead .actions-column').css('width',widthActionsColumn).attr('data-actions-col-width',widthActionsColumn);
+      }
+
       widthTableAvailable = widthContainer - (widthFirstColumn + widestColumn + widthActionsColumn);
       var counter = 1;
       var sum = 0;
@@ -151,16 +155,16 @@ $(document).ready(function() {
       $(target).find('thead th:not(:first-child):not(:nth-last-of-type(-n+2))').each( function() {
         columnSize = $(this).attr('data-column-size');
         if (columnSize == 'auto') {
-          cellWidth = (o.columnWidthNormal * baseRemPX) + 1;
+          cellWidth = (o.columnWidthNormal * o.baseRemPX) + 1;
         }
         else if (columnSize == 'narrow') {
-          cellWidth = (o.columnWidthNarrow * baseRemPX) + 1;
+          cellWidth = (o.columnWidthNarrow * o.baseRemPX) + 1;
         }
         else if (columnSize == 'normal') {
-          cellWidth = (o.columnWidthNormal * baseRemPX) + 1;
+          cellWidth = (o.columnWidthNormal * o.baseRemPX) + 1;
         }
         else if (columnSize == 'wide') {
-          cellWidth = (o.columnWidthWide * baseRemPX) + 1;
+          cellWidth = (o.columnWidthWide * o.baseRemPX) + 1;
         }
 
         sum += cellWidth;
@@ -184,9 +188,9 @@ $(document).ready(function() {
         counter ++;
       });
     }
-    hideDataColumns(target,o.baseRemPX);
+    hideDataColumns(target,o);
     $(window).resize( function() {
-      hideDataColumns(target,o.baseRemPX);
+      hideDataColumns(target,o);
     });
 
     /* Automatically set the selectable column */
