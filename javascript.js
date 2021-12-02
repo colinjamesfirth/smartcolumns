@@ -1,17 +1,7 @@
 $(document).ready(function() {
 
 
-  function smartTable(target,options) {
-    let optionDefaults = {
-      cellXPadding: 0.75, //rem
-      baseRemPX: parseFloat(getComputedStyle(document.documentElement).fontSize),
-      columnWidthNarrow: 5, //rem
-      columnWidthNormal: 10, //rem
-      columnWidthWide: 15 //rem
-    }
-    o = { ...optionDefaults, ...(options || {}) };
-
-
+  function smartTableBuilder(target) {
     /* Build the table header */
     (function() {
       var output = '<thead>\n<tr>';
@@ -57,6 +47,38 @@ $(document).ready(function() {
       $(target).append(output);
     })();
 
+    /* Build the actions column */
+    /* Sets the width of the column based on how wide the contents are, giving it a width appropriate to the number of buttons being shown for this particular table */
+    (function() {
+      $(target).find('thead tr').append('<th class="actions-column" aria-label="Actions"></th>\n');
+      $(target).find('tbody tr').each( function() {
+        var col1_data = $(this).find('td:first-child').text();
+        var output = '<td class="actions-column"><span>';
+        output += '<button data-open-button aria-label="Open record for ' + col1_data + '">Open</button>';
+        //output += '<button data-edit-button aria-label="Edit record for ' + col1_data + '">Edit</button>';
+        //output += '<button data-delete-button aria-label="Delete record for ' + col1_data + '">Delete</button>';
+        output += '</span></td>\n';
+        $(this).append(output);
+      });
+    })();
+
+  }
+  smartTableBuilder('table#data');
+
+//  $('table#data').wrap('<div class="table-container"></div>');
+
+
+
+  function smartTable(target,options) {
+    let optionDefaults = {
+      cellXPadding: 0.75, //rem
+      baseRemPX: parseFloat(getComputedStyle(document.documentElement).fontSize),
+      columnWidthNarrow: 5, //rem
+      columnWidthNormal: 10, //rem
+      columnWidthWide: 15 //rem
+    }
+    o = { ...optionDefaults, ...(options || {}) };
+
     /* Build the selectable column */
     (function() {
 //      $(target).find('thead tr').append('<th data-column-selectable data-column-size="' + widestColumn + '"></th>\n');
@@ -81,30 +103,14 @@ $(document).ready(function() {
       });
     })();
 
-    /* Build the actions column */
-    /* Sets the width of the column based on how wide the contents are, giving it a width appropriate to the number of buttons being shown for this particular table */
-    (function() {
-      $(target).find('thead tr').append('<th class="actions-column" aria-label="Actions"></th>\n');
-      $(target).find('tbody tr').each( function() {
-        var col1_data = $(this).find('td:first-child').text();
-        var output = '<td class="actions-column"><span>';
-        output += '<button data-open-button aria-label="Open record for ' + col1_data + '">Open</button>';
-        //output += '<button data-edit-button aria-label="Edit record for ' + col1_data + '">Edit</button>';
-        //output += '<button data-delete-button aria-label="Delete record for ' + col1_data + '">Delete</button>';
-        output += '</span></td>\n';
-        $(this).append(output);
-      });
-
-      actionsWidth = $(target).find('tbody tr:first-child .actions-column > span').width();
-      actionsWidth = actionsWidth + ((o.cellXPadding * o.baseRemPX) * 2);
-      $(target).find('thead .actions-column').css('width',actionsWidth).attr('data-actions-col-width',actionsWidth);
-    })();
-
-
-
     /* Wrap the target table in a block level div so we can measure the width of the containing space (also used for CSS selectors) */
     $(target).wrap('<div class="table-container"></div>');
 
+
+    actionsWidth = $(target).find('tbody tr:first-child .actions-column > span').width();
+    actionsWidth = actionsWidth + ((o.cellXPadding * o.baseRemPX) * 2);
+    $(target).find('thead .actions-column').css('width',actionsWidth).attr('data-actions-col-width',actionsWidth);
+    
     /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
     function hideDataColumns(target,baseRemPX) {
       widthTable = $(target).outerWidth();
