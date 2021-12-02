@@ -1,34 +1,15 @@
 $(document).ready(function() {
 
-//  var target = 'table#data';
-
-  /* Set some basic styling variables, reflecting what's in the stylesheet */
-  var cellXPadding = 0.76; //rem
-
-  /* Set the different basic column widths for the column hiding calculations, reflecting what's in the stylesheet */
-  var table_column_widths = [
-    //[sizeIndex, Xrem],
-    ['0','0'],
-    ['1','5'],
-    ['2','10'],
-    ['3','15']
-  ];
-
-  w = [];
-  table_columns.forEach(function(i) {
-    w.push(i[1]);
-  });
-  const widestColumn = Math.max(...[].concat(...w));
 
   function smartTable(target,options) {
     let optionDefaults = {
       cellXPadding: 0.75, //rem
-      baseRemPX: parseFloat(getComputedStyle(document.documentElement).fontSize)
+      baseRemPX: parseFloat(getComputedStyle(document.documentElement).fontSize),
+      columnWidthNarrow: 5, //rem
+      columnWidthNormal: 10, //rem
+      columnWidthWide: 15 //rem
     }
     o = { ...optionDefaults, ...(options || {}) };
-
-
-    $(target).wrap('<div class="table-container"></div>');
 
 
     /* Build the table header */
@@ -78,7 +59,9 @@ $(document).ready(function() {
 
     /* Build the selectable column */
     (function() {
-      $(target).find('thead tr').append('<th data-column-selectable data-column-size="' + widestColumn + '"></th>\n');
+//      $(target).find('thead tr').append('<th data-column-selectable data-column-size="' + widestColumn + '"></th>\n');
+      $(target).find('thead tr').append('<th data-column-selectable></th>\n');
+
       var firstHidden = $(target).find("thead th:hidden:first").index();
       options = '';
       table_columns.forEach( function(th,i) {
@@ -117,22 +100,64 @@ $(document).ready(function() {
       $(target).find('thead .actions-column').css('width',actionsWidth).attr('data-actions-col-width',actionsWidth);
     })();
 
+
+
+    /* Wrap the target table in a block level div so we can measure the width of the containing space (also used for CSS selectors) */
+    $(target).wrap('<div class="table-container"></div>');
+
     /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
     function hideDataColumns(target,baseRemPX) {
       widthTable = $(target).outerWidth();
       widthContainer = $(target).closest('.table-container').outerWidth();
+
       widthFirstColumn = table_columns[0][1];
-      widthFirstColumn = table_column_widths[widthFirstColumn][1] * baseRemPX + 1;
-      widthSelectColumn = (table_column_widths[widestColumn][1] * baseRemPX) + 1;
+      if (widthFirstColumn == 'auto') {
+        widthFirstColumn = (o.columnWidthNormal * baseRemPX) + 1;
+      }
+      else if (widthFirstColumn == 'narrow') {
+        widthFirstColumn = (o.columnWidthNarrow * baseRemPX) + 1;
+      }
+      else if (widthFirstColumn == 'normal') {
+        widthFirstColumn = (o.columnWidthNormal * baseRemPX) + 1;
+      }
+      else if (widthFirstColumn == 'wide') {
+        widthFirstColumn = (o.columnWidthWide * baseRemPX) + 1;
+      }
+
+      var widestColumn = null;
+      if ( $(target).find('thead th[data-column-size="wide"]').length ) {
+        widestColumn = (o.columnWidthWide * baseRemPX) + 1;
+      }
+      else if ( $(target).find('thead th[data-column-size="normal"]').length ) {
+        widestColumn = (o.columnWidthNormal * baseRemPX) + 1;
+      }
+      else if ( $(target).find('thead th[data-column-size="narrow"]').length ) {
+        widestColumn = (o.columnWidthNarrow * baseRemPX) + 1;
+      }
+      else if ( $(target).find('thead th[data-column-size="auto"]').length ) {
+        widestColumn = (o.columnWidthNormal * baseRemPX) + 1;
+      }
+
       widthActionsColumn = actionsWidth;
-      widthTableAvailable = widthContainer - (widthFirstColumn + widthSelectColumn + widthActionsColumn);
+      widthTableAvailable = widthContainer - (widthFirstColumn + widestColumn + widthActionsColumn);
       var counter = 1;
       var sum = 0;
 
       $(target).find('thead th:not(:first-child):not(:nth-last-of-type(-n+2))').each( function() {
         columnSize = $(this).attr('data-column-size');
-        columnWidth = table_column_widths[columnSize][1];
-        cellWidth = (columnWidth * baseRemPX) + 1;
+        if (columnSize == 'auto') {
+          cellWidth = (o.columnWidthNormal * baseRemPX) + 1;
+        }
+        else if (columnSize == 'narrow') {
+          cellWidth = (o.columnWidthNarrow * baseRemPX) + 1;
+        }
+        else if (columnSize == 'normal') {
+          cellWidth = (o.columnWidthNormal * baseRemPX) + 1;
+        }
+        else if (columnSize == 'wide') {
+          cellWidth = (o.columnWidthWide * baseRemPX) + 1;
+        }
+
         sum += cellWidth;
         if (sum > widthTableAvailable) {
           $(this).hide();

@@ -49,17 +49,17 @@ table.table-responsive td:not(:first-child) {
   border-left: 1px solid grey;
 }
 
-table.table-responsive th,
-table.table-responsive th[data-column-size="0"] {
+table.table-responsive th[data-column-size="auto"] {
   width: auto;
 }
-table.table-responsive th[data-column-size="1"] {
+table.table-responsive th[data-column-size="narrow"] {
   width: 5rem;
 }
-table.table-responsive th[data-column-size="2"] {
+table.table-responsive th:not([data-column-size]),
+table.table-responsive th[data-column-size="normal"] {
   width: 10rem;
 }
-table.table-responsive th[data-column-size="3"] {
+table.table-responsive th[data-column-size="wide"] {
   width: 15rem;
 }
 
