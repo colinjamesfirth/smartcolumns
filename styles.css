@@ -63,12 +63,11 @@ table.table-responsive th[data-column-size="wide"] {
   width: 15rem;
 }
 
-table.table-responsive tbody tr:hover {
-  background: #e5e5e5;
-}
-
 table.table-responsive tr[data-row-clickable] {
   cursor: pointer;
+}
+table.table-responsive tr[data-row-clickable]:hover {
+  background: #e5e5e5;
 }
 
 table.table-responsive .actions-column {

@@ -25,7 +25,7 @@ $(document).ready(function() {
       var row_counter = 0;
       var output = '<tbody>\n';
       table_rows.forEach( function(r) {
-        output += '<tr data-row-clickable data-table-row="' + row_counter + '">';
+        output += '<tr data-table-row="' + row_counter + '">';
         col1_data = r[0];
         var col_counter = 0;
         r.forEach( function(td) {
@@ -65,8 +65,6 @@ $(document).ready(function() {
   }
   smartTableBuilder('table#data');
 
-//  $('table#data').wrap('<div class="table-container"></div>');
-
 
 
   function smartTable(target,options) {
@@ -75,22 +73,23 @@ $(document).ready(function() {
       baseRemPX: parseFloat(getComputedStyle(document.documentElement).fontSize),
       columnWidthNarrow: 5, //rem
       columnWidthNormal: 10, //rem
-      columnWidthWide: 15 //rem
+      columnWidthWide: 15, //rem
+      ignoreFirstColumn: true,
+      ignoreLastColumn: true
     }
     o = { ...optionDefaults, ...(options || {}) };
 
     /* Build the selectable column */
     (function() {
-//      $(target).find('thead tr').append('<th data-column-selectable data-column-size="' + widestColumn + '"></th>\n');
-      $(target).find('thead tr').append('<th data-column-selectable></th>\n');
+      $(target).find('thead tr th.actions-column').before('<th data-column-selectable></th>\n');
 
       var firstHidden = $(target).find("thead th:hidden:first").index();
       options = '';
       table_columns.forEach( function(th,i) {
         options += '<option value="' + i + '">' + th[0] + '</option>\n';
       });
-      $(target).find('tbody tr').each( function() {
-        $(this).append('<td></td>\n');
+      $(target).find('tbody tr td.actions-column').each( function() {
+        $(this).before('<td></td>\n');
       });
       var column_select = '<select data-column-selected="auto" aria-label="Choose the data for this column">\n' + options + '</select>\n';
       $(target).find('th[data-column-selectable]').html(column_select);
@@ -110,7 +109,7 @@ $(document).ready(function() {
     actionsWidth = $(target).find('tbody tr:first-child .actions-column > span').width();
     actionsWidth = actionsWidth + ((o.cellXPadding * o.baseRemPX) * 2);
     $(target).find('thead .actions-column').css('width',actionsWidth).attr('data-actions-col-width',actionsWidth);
-    
+
     /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
     function hideDataColumns(target,baseRemPX) {
       widthTable = $(target).outerWidth();
@@ -255,18 +254,21 @@ $(document).ready(function() {
   /* ADDITIONAL FEATURES: Selecting the whole row; button clicks
 
   /* On click event for the open button in the actions column (if we have one) */
-  $('table#data tr[data-row-clickable] td:not(:last-child), table#data button[data-open-button]').on('click',function() {
+
+  /*  $('table#data tr[data-row-clickable] td:not(:last-child), table#data button[data-open-button]').on('click',function() {
     var dataIndex = $(this).closest('tr[data-row-clickable]').attr('data-table-row');
     var dataCol1Value = table_rows[dataIndex][0];
     alert('open: ' + dataCol1Value);
   });
+  */
 
   /* On click event for the edit button in the actions column (if we have one) */
-  $('table#data button[data-edit-button]').on('click',function() {
+  /* $('table#data button[data-edit-button]').on('click',function() {
     var dataIndex = $(this).closest('tr[data-row-clickable]').attr('data-table-row');
     var dataCol1Value = table_rows[dataIndex][0];
     alert('edit: ' + dataCol1Value);
   });
+  */
 
 
   // end doc ready
