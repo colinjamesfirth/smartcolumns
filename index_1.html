@@ -2,32 +2,38 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="javascript.js"></script>
+    <script type="text/javascript" src="tableBuilder.js"></script>
+    <script type="text/javascript" src="smartTable.js"></script>
     <link rel="stylesheet" href="styles.css">
 
     <script>
-    /* Set the column characteristics */
-    var table_columns = [
-      //ColumnName,ColumnWidthIndex,DataWrap,DataCenter
-      ['Name','normal',false,false],
-      ['Email','wide',true,false],
-      ['Gender','normal',false,false],
-      ['Hair','normal',false,false],
-      ['Eyes','normal',false,false],
-      ['Age','narrow',false,true],
-      ['Status','normal',false,false],
-      ['Town','normal',false,false],
-      ['Job','normal',false,false],
-      ['Narrative','wide',true,false]
-    ];
+      /* Set the column characteristics */
+      var table_columns = [
+        //ColumnName,ColumnWidthIndex,DataWrap,DataCenter
+        ['Name','normal',false,false],
+        ['Email','wide',true,false],
+        ['Gender','normal',false,false],
+        ['Hair','normal',false,false],
+        ['Eyes','normal',false,false],
+        ['Age','narrow',false,true],
+        ['Status','normal',false,false],
+        ['Town','normal',false,false],
+        ['Job','normal',false,false],
+        ['Narrative','wide',true,false]
+      ];
 
-    /* Define the row data */
-    var table_rows = [
-      ['Martin','martin.brown@mycompany.com','Male','Blonde','Blue','24','Single','Bolton','Builder','An amazing worker with brevity that would impress a lion'],
-      ['Julie','julie.burshendasser@mycompany.com','Female','Brown','Green','62','Married','Wigan','Accountant','If she can\'t add it, it\'s not worth adding'],
-      ['Rey','rey.bassy-carrington-jones@mycompany.com','Non-binary','Silver','Blue','42','Single','Leigh','Driver','A nicer person you couldn\'t wish to meet (thisisareallylongwordjustfortesting)'],
-      ['Jennifer','jennifer.sundance@mycompany.com','Female','Black','Brown','31','Civil Partnership','Huddersfield','Dentist','The best tooth MOT in Huddersfield']
-    ];
+      /* Define the row data */
+      var table_rows = [
+        ['Martin','martin.brown@mycompany.com','Male','Blonde','Blue','24','Single','Bolton','Builder','An amazing worker with brevity that would impress a lion'],
+        ['Julie','julie.burshendasser@mycompany.com','Female','Brown','Green','62','Married','Wigan','Accountant','If she can\'t add it, it\'s not worth adding'],
+        ['Rey','rey.bassy-carrington-jones@mycompany.com','Non-binary','Silver','Blue','42','Single','Leigh','Driver','A nicer person you couldn\'t wish to meet (thisisareallylongwordjustfortesting)'],
+        ['Jennifer','jennifer.sundance@mycompany.com','Female','Black','Brown','31','Civil Partnership','Huddersfield','Dentist','The best tooth MOT in Huddersfield']
+      ];
+
+      $(document).ready(function() {
+        smartTable('table#data',{ });
+      }); // end doc ready
+
     </script>
 
   </head>

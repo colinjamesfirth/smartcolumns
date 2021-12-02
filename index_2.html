@@ -2,26 +2,31 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="javascript.js"></script>
+    <script type="text/javascript" src="tableBuilder.js"></script>
+    <script type="text/javascript" src="smartTable.js"></script>
     <link rel="stylesheet" href="styles.css">
 
     <script>
-    /* Set the column characteristics */
-    var table_columns = [
-      //ColumnName,ColumnWidthIndex,DataWrap,DataCenter
-      ['Name','normal',false,false],
-      ['Email','normal',true,false],
-      ['Gender','normal',false,false],
-      ['Age','narrow',false,true],
-    ];
+      /* Set the column characteristics */
+      var table_columns = [
+        //ColumnName,ColumnWidthIndex,DataWrap,DataCenter
+        ['Name','normal',false,false],
+        ['Email','normal',true,false],
+        ['Gender','normal',false,false],
+        ['Age','narrow',false,true],
+      ];
 
-    /* Define the row data */
-    var table_rows = [
-      ['Martin','martin.brown@mycompany.com','Male','24'],
-      ['Julie','julie.burshendasser@mycompany.com','Female','62'],
-      ['Rey','rey.bassy-carrington-jones@mycompany.com','Non-binary','42'],
-      ['Jennifer','jennifer.sundance@mycompany.com','Female','31']
-    ];
+      /* Define the row data */
+      var table_rows = [
+        ['Martin','martin.brown@mycompany.com','Male','24'],
+        ['Julie','julie.burshendasser@mycompany.com','Female','62'],
+        ['Rey','rey.bassy-carrington-jones@mycompany.com','Non-binary','42'],
+        ['Jennifer','jennifer.sundance@mycompany.com','Female','31']
+      ];
+
+      $(document).ready(function() {
+        smartTable('table#data',{ });
+      }); // end doc ready
     </script>
 
   </head>
