@@ -13,19 +13,18 @@ function smartTable(target,options) {
   /* Wrap the target table in a block level div so we can measure the width of the containing space (also used for CSS selectors) */
   $(target).wrap('<div class="table-container"></div>');
 
+  var selectColPos = (o.hasActionsColumn === true) ? 2 : 1;
+
   /* Build the selectable column */
   (function() {
-
-    var insertSelectAfterNth = (o.hasActionsColumn === 'true') ? '1' :'2';
-
-    $(target).find('thead tr th:nth-last-of-type(' + insertSelectAfterNth + ')').after('<th data-column-selectable></th>\n');
+    $(target).find('thead tr th:nth-last-of-type(' + selectColPos + ')').after('<th data-column-selectable></th>\n');
 
     var firstHidden = $(target).find("thead th:hidden:first").index();
     options = '';
     table_columns.forEach( function(th,i) {
       options += '<option value="' + i + '">' + th[0] + '</option>\n';
     });
-    $(target).find('tbody tr td:nth-last-of-type(' + insertSelectAfterNth + ')').each( function() {
+    $(target).find('tbody tr td:nth-last-of-type(' + selectColPos + ')').each( function() {
       $(this).after('<td></td>\n');
     });
     var column_select = '<select data-column-selected="auto" aria-label="Choose the data for this column">\n' + options + '</select>\n';
@@ -40,7 +39,7 @@ function smartTable(target,options) {
   })();
 
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
-  function hideDataColumns(target,o) {
+  function hideDataColumns(target,o,selectColPos) {
     widthTable = $(target).outerWidth();
     widthContainer = $(target).closest('.table-container').outerWidth();
 
@@ -83,7 +82,7 @@ function smartTable(target,options) {
     var counter = 1;
     var sum = 0;
 
-    $(target).find('thead th:not(:first-child):not(:nth-last-of-type(-n+2))').each( function() {
+    $(target).find('thead th:not(:first-child):not(:nth-last-of-type(-n+' + selectColPos + '))').each( function() {
       columnSize = $(this).attr('data-column-size');
       if (columnSize == 'auto') {
         cellWidth = (o.columnWidthNormal * o.baseRemPX) + 1;
@@ -104,7 +103,7 @@ function smartTable(target,options) {
         $(target).find('tbody tr').each( function() {
           $(this).find('td').eq(counter).hide();
         })
-      } else if ( $(this).is(':nth-last-of-type(3)') ) {
+      } else if ( $(this).is(':nth-last-of-type(' + (selectColPos + 1) +')') ) {
         $(this).hide();
         $(target).find('tbody tr').each( function() {
           $(this).find('td').eq(counter).hide();
@@ -119,9 +118,9 @@ function smartTable(target,options) {
       counter ++;
     });
   }
-  hideDataColumns(target,o);
+  hideDataColumns(target,o,selectColPos);
   $(window).resize( function() {
-    hideDataColumns(target,o);
+    hideDataColumns(target,o,selectColPos);
   });
 
   /* Automatically set the selectable column */

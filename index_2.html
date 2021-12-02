@@ -25,8 +25,14 @@
       ];
 
       $(document).ready(function() {
-        smartTable('table#data',{ });
+        smartTableBuilder('table#data',{
+          makeActionsColumn: false
+        });
+        smartTable('table#data',{
+          hasActionsColumn: false
+       });
       }); // end doc ready
+
     </script>
 
   </head>

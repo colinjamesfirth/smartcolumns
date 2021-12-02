@@ -1,6 +1,13 @@
-$(document).ready(function() {
 
-  function smartTableBuilder(target) {
+  function smartTableBuilder(target,options) {
+
+
+    let optionDefaults = {
+      makeActionsColumn: true
+    }
+    o = { ...optionDefaults, ...(options || {}) };
+
+
     /* Build the table header */
     (function() {
       var output = '<thead>\n<tr>';
@@ -48,26 +55,27 @@ $(document).ready(function() {
 
     /* Build the actions column */
     /* Sets the width of the column based on how wide the contents are, giving it a width appropriate to the number of buttons being shown for this particular table */
-    (function() {
-      $(target).find('thead tr').append('<th class="actions-column" aria-label="Actions"></th>\n');
-      $(target).find('tbody tr').each( function() {
-        var col1_data = $(this).find('td:first-child').text();
-        var output = '<td class="actions-column"><span>';
-        output += '<button data-open-button aria-label="Open record for ' + col1_data + '">Open</button>';
-        //output += '<button data-edit-button aria-label="Edit record for ' + col1_data + '">Edit</button>';
-        //output += '<button data-delete-button aria-label="Delete record for ' + col1_data + '">Delete</button>';
-        output += '</span></td>\n';
-        $(this).append(output);
-      });
-    })();
-
+    if (o.makeActionsColumn == true) {
+      (function() {
+        $(target).find('thead tr').append('<th class="actions-column" aria-label="Actions"></th>\n');
+        $(target).find('tbody tr').each( function() {
+          var col1_data = $(this).find('td:first-child').text();
+          var output = '<td class="actions-column"><span>';
+          output += '<button data-open-button aria-label="Open record for ' + col1_data + '">Open</button>';
+          //output += '<button data-edit-button aria-label="Edit record for ' + col1_data + '">Edit</button>';
+          //output += '<button data-delete-button aria-label="Delete record for ' + col1_data + '">Delete</button>';
+          output += '</span></td>\n';
+          $(this).append(output);
+        });
+      })();
+    }
   }
-  smartTableBuilder('table#data');
 
 
 
 
 
+  $(document).ready(function() {
 
 
     /* ADDITIONAL FEATURES: Selecting the whole row; button clicks
@@ -89,6 +97,6 @@ $(document).ready(function() {
     });
     */
 
-    
+
 
 }); // end doc ready
