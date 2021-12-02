@@ -21,7 +21,7 @@ $(document).ready(function() {
   });
   const widestColumn = Math.max(...[].concat(...w));
 
-    /* Build the table header */
+  /* Build the table header */
   (function() {
     var output = '<thead>\n<tr>';
     table_columns.forEach( function(th) {
@@ -79,6 +79,14 @@ $(document).ready(function() {
     });
     var column_select = '<select data-column-selected="auto" aria-label="Choose the data for this column">\n' + options + '</select>\n';
     $('table#data th[data-column-selectable]').html(column_select);
+
+    /* When user manually selects data for the selectable column... */
+    $('table#data').on('change','select[data-column-selected]',function() {
+      var data_column = $(this).val();
+      $(this).attr('data-column-selected',data_column);
+      selectableColumn_set(data_column);
+      $('select[data-column-selected]').find('option[data-choose]').remove();
+    });
   })();
 
   /* Build the actions column */
@@ -109,7 +117,6 @@ $(document).ready(function() {
     widthSelectColumn = (table_column_widths[widestColumn][1] * baseRemPX) + 1;
     widthActionsColumn = actionsWidth;
     widthTableAvailable = widthContainer - (widthFirstColumn + widthSelectColumn + widthActionsColumn);
-    console.log(widthFirstColumn);
     var counter = 1;
     var sum = 0;
 
@@ -161,26 +168,40 @@ $(document).ready(function() {
   function selectableColumn_set(data_column) {
     select_column_index = $('th[data-column-selectable]').index();
     counter = 0;
+
+    //change the select menu's selected option to the chosen one:
     $('select[data-column-selected] option[value="' + data_column + '"]').prop('selected', true);
+
+    //change the select column's width index to the correct value for the selected data column:
+    $('th[data-column-selectable]').attr('data-column-size',table_columns[data_column][1]);
+
+    //add styling attributes to the body table cells in the selectable column
     $('table#data tbody tr').each(function() {
       targetTD = $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')');
       cell_data = table_rows[counter][data_column];
+
+      //remove and add the column-wrap:
       targetTD.removeAttr('data-column-wrap');
       if (table_columns[data_column][2] == true) {
         targetTD.attr('data-display-wrap','');
       }
+
+      //remove and add the center alignment:
+      targetTD.removeAttr('data-display-center');
+      if (table_columns[data_column][3] == true) {
+        targetTD.attr('data-display-center','');
+      }
+
       targetTD.text(cell_data);
       counter ++;
     });
   }
 
-  /* When user manually selects data for the selectable column... */
-  $('table#data').on('change','select[data-column-selected]',function() {
-    var data_column = $(this).val();
-    $(this).attr('data-column-selected',data_column);
-    selectableColumn_set(data_column);
-    $('select[data-column-selected]').find('option[data-choose]').remove();
-  });
+
+
+
+
+  /* ADDITIONAL FEATURES: Selecting the whole row; button clicks
 
   /* On click event for the open button in the actions column (if we have one) */
   $('table#data tr[data-row-clickable] td:not(:last-child), table#data button[data-open-button]').on('click',function() {

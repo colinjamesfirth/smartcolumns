@@ -40,6 +40,8 @@ table.table-responsive [data-display-wrap] {
 }
 table.table-responsive [data-display-center] {
   text-align: center;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
 }
 
 table.table-responsive th:not(:first-child),
@@ -62,11 +64,15 @@ table.table-responsive th[data-column-size="3"] {
 }
 
 table.table-responsive tbody tr:hover {
-  background: yellow;
+  background: #e5e5e5;
 }
 
 table.table-responsive tr[data-row-clickable] {
   cursor: pointer;
+}
+
+table.table-responsive .actions-column {
+  text-align: center;
 }
 
 table.table-responsive .actions-column span {
