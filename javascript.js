@@ -123,6 +123,11 @@ $(document).ready(function() {
         $('table#data tbody tr').each( function() {
           $(this).find('td').eq(counter).hide();
         })
+      } else if ( $(this).is(':nth-last-of-type(3)') ) {
+        $(this).hide();
+        $('table#data tbody tr').each( function() {
+          $(this).find('td').eq(counter).hide();
+        })
       }
       else {
         $(this).show();
@@ -142,15 +147,9 @@ $(document).ready(function() {
   /* If all columns (exclusing the first) are hidden then show the first hidden column's data instead of a blank column; then make it blank again if the window size increases and more columns can show. But, if the user selects data for the selectable column, then that selection persists. Run at page load and on window resize */
   function selectableColumn_auto() {
     var data = $('select[data-column-selected]').attr('data-column-selected');
-    $('select[data-column-selected] option[data-choose]').remove();
     if ( data == 'auto') {
-      if ( $('table#data thead th:nth-last-child(3)').is(":visible") ) {
-        selectableColumn_clear();
-        $('select[data-column-selected]').prepend('<option data-choose value="auto" aria-label="Choose the data for this column" selected>Choose...</option>\n');
-      } else {
-        var firstHidden = $('table#data thead th:hidden:first').index();
-        selectableColumn_set(firstHidden);
-      }
+      var firstHidden = $('table#data thead th:hidden:first').index();
+      selectableColumn_set(firstHidden);
     }
   }
   selectableColumn_auto();
@@ -158,22 +157,10 @@ $(document).ready(function() {
     selectableColumn_auto();
   });
 
-  /* Clear the selectable column if we need to */
-  function selectableColumn_clear() {
-    select_column_index = $('th[data-column-selectable]').index();
-    $('select[data-column-selected] option[data-choose]').prop('selected', true);
-    $('table#data tbody tr').each(function() {
-      $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')').empty();
-    });
-  }
-
   /* Sets the selectable column's data when we need to put data into it */
   function selectableColumn_set(data_column) {
     select_column_index = $('th[data-column-selectable]').index();
     counter = 0;
-    if (data_column == 'auto') {
-      selectableColumn_clear();
-    }
     $('select[data-column-selected] option[value="' + data_column + '"]').prop('selected', true);
     $('table#data tbody tr').each(function() {
       targetTD = $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')');
