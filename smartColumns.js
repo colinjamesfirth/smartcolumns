@@ -87,9 +87,19 @@ function smartColumns(target,options) {
 
     var widthActionsColumn = 0;
     if (o.hasActionsColumn === true) {
-      widthActionsColumn = $(target).find('tbody tr:first-child .actions-column > span').width();
+      //get the index of the actions column:
+      var actionsIndex = $(target).find('th[data-smartcol-actions]').index();
+
+      //add a temporary span around the actions in the first row, so we can measure their width (note we can't just measure the cell width, because the browser chooses how wide it is based on the rest of the table's content):
+      $(target).find('tbody tr:first-child td').eq(actionsIndex).wrapInner('<span data-smartcol-actions-temp></span>');
+
+      //measure the width, calculate the fixed width and apply it:
+      widthActionsColumn = $(target).find('span[data-smartcol-actions-temp]').width();
       widthActionsColumn = widthActionsColumn + ((o.cellXPadding * o.baseRemPX) * 2);
-      $(target).find('thead .actions-column').css('width',widthActionsColumn).attr('data-actions-col-width',widthActionsColumn);
+      $(target).find('th[data-smartcol-actions]').css('width',widthActionsColumn);
+
+      //remove the temporary span:
+      $(target).find('span[data-smartcol-actions-temp]').children().unwrap();
     }
 
     widthTableAvailable = widthContainer - (widthFirstColumn + widestColumn + widthActionsColumn);
