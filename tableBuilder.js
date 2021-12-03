@@ -15,13 +15,13 @@
       table_columns.forEach( function(th) {
         var isWrap = '';
         if (th[2] == true) {
-          isWrap = ' data-display-wrap';
+          isWrap = ' data-smartcol-wrap';
         }
         var isCenter = '';
         if (th[3] == true) {
-          isWrap = ' data-display-center';
+          isWrap = ' data-smartcol-center';
         }
-        output += '<th data-column-index="' + col_counter + '" data-column-size="' + th[1] + '"' + isWrap + isCenter + '>' + th[0] + '</th>\n';
+        output += '<th data-smartcol-index="' + col_counter + '" data-smartcol-width="' + th[1] + '"' + isWrap + isCenter + '>' + th[0] + '</th>\n';
         col_counter ++;
       });
       output += '</tr>\n</thead>\n';
@@ -40,11 +40,11 @@
         r.forEach( function(td) {
           var isWrap = '';
           if (table_columns[col_counter][2] == true) {
-            isWrap = ' data-display-wrap';
+            isWrap = ' data-smartcol-wrap';
           }
           var isCenter = '';
           if (table_columns[col_counter][3] == true) {
-            isWrap = ' data-display-center';
+            isWrap = ' data-smartcol-center';
           }
           output += '<td' + isWrap + isCenter + '>' + td + '</td>\n';
           col_counter ++;
