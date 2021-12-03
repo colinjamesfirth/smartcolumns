@@ -32,9 +32,10 @@
 
       $(document).ready(function() {
         smartColumnsBuilder('table#data',{ });
-        smartColumns('table#data',{ });
+        smartColumns('table#data',{
+          freezeFirstColumn: true
+        });
       }); // end doc ready
-
     </script>
 
   </head>

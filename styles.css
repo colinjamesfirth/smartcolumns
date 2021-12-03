@@ -106,7 +106,7 @@ table tr[data-row-clickable]:hover {
 .smartcol-container table th[data-smartcol-width="narrow"] {
   width: 5rem;
 }
-.smartcol-container table th:not([data-smartcol-width]),
+/*.smartcol-container table th:not([data-smartcol-width]), */
 .smartcol-container table th[data-smartcol-width="normal"] {
   width: 10rem;
 }
@@ -124,11 +124,11 @@ table tr[data-row-clickable]:hover {
   }
 }
 
-.smartcol-container table .actions-column {
+.smartcol-container th[data-smartcol-actions] {
   text-align: center;
 }
 
-.smartcol-container table .actions-column span {
+.smartcol-container span[data-smartcol-actions-wrap] {
   display: inline-flex;
   justify-content: space-between;
   gap: 0.5em;
@@ -160,4 +160,3 @@ table tr[data-row-clickable]:hover {
   border-color: #666666;
   color: white;
 }
-

@@ -17,7 +17,6 @@ function smartColumns(target,options) {
 
   /* Build the selectable column */
   (function() {
-
     //create the select menu:
     selectMenu = '<select aria-label="Choose the data for this column">\n';
     $(target).find('thead th[data-smartcol-index]').each(function() {
@@ -47,8 +46,41 @@ function smartColumns(target,options) {
 
   })();
 
+
+
+
+  var widthActionsContent = 0;
+  if (o.hasActionsColumn === true) {
+    //get the index of the actions column:
+    var actionsIndex = $(target).find('th[data-smartcol-actions]').index();
+
+    //add a temporary span around the actions in the first row, so we can measure their width (note we can't just measure the cell width, because the browser chooses how wide it is based on the rest of the table's content):
+    $(target).find('tbody tr').each(function() {
+      $(this).find('td').eq(actionsIndex).wrapInner('<span data-smartcol-actions-wrap></span>');
+    });
+
+    //measure the width, calculate the fixed width and apply it:
+    widthActionsContent = $(target).find('tbody tr:first-child span[data-smartcol-actions-wrap]').width();
+    widthActionsContent = widthActionsContent + ((o.cellXPadding * o.baseRemPX) * 2);
+
+    function updateActionsColumnWidth() {
+      widthContainer = $(target).closest('.smartcol-container').outerWidth();
+
+      //dynamically change the width of the actions column as the window changes width.
+      var widthActionsColumn = ((100 / widthContainer) * widthActionsContent) + '%';
+      $(target).find('th[data-smartcol-actions]').css('width',widthActionsColumn);
+    }
+    updateActionsColumnWidth();
+    $(window).resize( function() {
+      updateActionsColumnWidth();
+    });
+
+    //remove the temporary span:
+    //$(target).find('span[data-smartcol-actions-temp]').children().unwrap();
+  }
+
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
-  function hideDataColumns(target,o,selectColPos) {
+  function hideDataColumns(target,o,selectColPos,widthActionsContent) {
     widthTable = $(target).outerWidth();
     widthContainer = $(target).closest('.smartcol-container').outerWidth();
 
@@ -85,24 +117,7 @@ function smartColumns(target,options) {
       widestColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
     }
 
-    var widthActionsColumn = 0;
-    if (o.hasActionsColumn === true) {
-      //get the index of the actions column:
-      var actionsIndex = $(target).find('th[data-smartcol-actions]').index();
-
-      //add a temporary span around the actions in the first row, so we can measure their width (note we can't just measure the cell width, because the browser chooses how wide it is based on the rest of the table's content):
-      $(target).find('tbody tr:first-child td').eq(actionsIndex).wrapInner('<span data-smartcol-actions-temp></span>');
-
-      //measure the width, calculate the fixed width and apply it:
-      widthActionsColumn = $(target).find('span[data-smartcol-actions-temp]').width();
-      widthActionsColumn = widthActionsColumn + ((o.cellXPadding * o.baseRemPX) * 2);
-      $(target).find('th[data-smartcol-actions]').css('width',widthActionsColumn);
-
-      //remove the temporary span:
-      $(target).find('span[data-smartcol-actions-temp]').children().unwrap();
-    }
-
-    widthTableAvailable = widthContainer - (widthFirstColumn + widestColumn + widthActionsColumn);
+    widthTableAvailable = widthContainer - (widthFirstColumn + widestColumn + widthActionsContent);
     var counter = 1;
     var sum = 0;
 
@@ -145,9 +160,9 @@ function smartColumns(target,options) {
       counter ++;
     });
   }
-  hideDataColumns(target,o,selectColPos);
+  hideDataColumns(target,o,selectColPos,widthActionsContent);
   $(window).resize( function() {
-    hideDataColumns(target,o,selectColPos);
+    hideDataColumns(target,o,selectColPos,widthActionsContent);
   });
 
   /* Automatically set the selectable column */
