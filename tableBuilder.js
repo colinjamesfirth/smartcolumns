@@ -10,6 +10,7 @@
 
     /* Build the table header */
     (function() {
+      var col_counter = 1;
       var output = '<thead>\n<tr>';
       table_columns.forEach( function(th) {
         var isWrap = '';
@@ -20,10 +21,12 @@
         if (th[3] == true) {
           isWrap = ' data-display-center';
         }
-          output += '<th data-column-size="' + th[1] + '"' + isWrap + isCenter + '>' + th[0] + '</th>\n';
+        output += '<th data-column-index="' + col_counter + '" data-column-size="' + th[1] + '"' + isWrap + isCenter + '>' + th[0] + '</th>\n';
+        col_counter ++;
       });
       output += '</tr>\n</thead>\n';
       $(target).append(output);
+
     })();
 
     /* Build the table body */

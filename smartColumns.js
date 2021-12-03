@@ -17,25 +17,34 @@ function smartColumns(target,options) {
 
   /* Build the selectable column */
   (function() {
-    $(target).find('thead tr th:nth-last-of-type(' + selectColPos + ')').after('<th data-column-selectable></th>\n');
 
-    var firstHidden = $(target).find("thead th:hidden:first").index();
-    options = '';
-    table_columns.forEach( function(th,i) {
-      options += '<option value="' + i + '">' + th[0] + '</option>\n';
+//TODO: not sure why this is here:
+var firstHidden = $(target).find("thead th:hidden:first").index();
+
+    //create the select menu:
+    selectMenu = '<select data-column-auto aria-label="Choose the data for this column">\n';
+    $(target).find('thead th[data-column-index]').each(function() {
+      v = $(this).attr('data-column-index');
+      t = $(this).text();
+      selectMenu += '<option value="' + v + '">' + t + '</option>\n';
     });
+    selectMenu += '</select>\n';
+
+    //add the new th in the thead for the selctable column:
+    $(target).find('thead tr th:nth-last-of-type(' + selectColPos + ')').after('<th data-column-selectable>' + selectMenu + '</th>\n');
+
+    //add a new td in every tbody row for the selctable column:
     $(target).find('tbody tr td:nth-last-of-type(' + selectColPos + ')').each( function() {
       $(this).after('<td></td>\n');
     });
-    var column_select = '<select data-column-selected="auto" aria-label="Choose the data for this column">\n' + options + '</select>\n';
-    $(target).find('th[data-column-selectable]').html(column_select);
 
-    /* When user manually selects data for the selectable column... */
-    $(target).on('change','select[data-column-selected]',function() {
+    /* Add a change event to the select menu to check for user input */
+    $(target).on('change','th[data-column-selectable] select',function() {
       var data_column = $(this).val();
-      $(this).attr('data-column-selected',data_column);
+      $(this).removeAttr('data-column-auto');
       selectableColumn_set(target,data_column);
     });
+
   })();
 
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
@@ -132,11 +141,11 @@ function smartColumns(target,options) {
   });
 
   /* Automatically set the selectable column */
-  /* If all columns (exclusing the first) are hidden then show the first hidden column's data instead of a blank column; then make it blank again if the window size increases and more columns can show. But, if the user selects data for the selectable column, then that selection persists. Run at page load and on window resize */
+  /* If selectable column is set to auto (default on page load), show the data for the first hidden column. This dynamically changes the data in the selectable column as data columns hide and show. Run at page load and on window resize */
   function selectableColumn_auto(target) {
-    var data = $(target).find('select[data-column-selected]').attr('data-column-selected');
-    if ( data == 'auto') {
-      var firstHidden = $(target).find('thead th:hidden:first').index();
+    var auto = $(target).find('th[data-column-selectable] select').attr('data-column-auto');
+    if (typeof auto !== 'undefined' && auto !== false) {
+      var firstHidden = $(target).find('thead th:hidden:first').attr('data-column-index');
       selectableColumn_set(target,firstHidden);
     }
   }
@@ -147,35 +156,45 @@ function smartColumns(target,options) {
 
   /* Sets the selectable column's data when we need to put data into it */
   function selectableColumn_set(target,data_column) {
-    console.log(data_column);
-    select_column_index = $(target).find('th[data-column-selectable]').index();
-    counter = 0;
+
+    //get the index of the selectable column, so we know where to put the data:
+    var selectIndex = $(target).find('th[data-column-selectable]').index() + 1;
+
+    var selectTH = $(target).find('th[data-column-selectable]');
+
+    var sourceTH = $(target).find('th[data-column-index="' + data_column + '"]');
+    var sourceIndex = sourceTH.attr('data-column-index');
+    var sourceSize = sourceTH.attr('data-column-size');
+    var sourceWrap = sourceTH.attr('data-display-wrap');
+    var sourceCenter = sourceTH.attr('data-display-center');
 
     //change the select menu's selected option to the chosen one:
-    $(target).find('select[data-column-selected] option[value="' + data_column + '"]').prop('selected', true);
+    $(selectTH).find('select option').removeAttr('selected'); //remove existing selected first
+    $(selectTH).find('select option[value="' + sourceIndex + '"]').attr('selected', 'selected');
 
-    //change the select column's width index to the correct value for the selected data column:
-    $(target).find('th[data-column-selectable]').attr('data-column-size',table_columns[data_column][1]);
+    //change the select column's size keyword to the correct value for the selected data column:
+    $(selectTH).attr('data-column-size',sourceSize);
 
     //add styling attributes to the body table cells in the selectable column
     $(target).find('tbody tr').each(function() {
-      targetTD = $(this).find('td:nth-of-type(' + (select_column_index + 1) + ')');
-      cell_data = table_rows[counter][data_column];
+      selectTD = $(this).find('td:nth-of-type(' + (selectIndex + 0) + ')');
 
       //remove and add the column-wrap:
-      targetTD.removeAttr('data-column-wrap');
-      if (table_columns[data_column][2] == true) {
-        targetTD.attr('data-display-wrap','');
+      selectTD.removeAttr('data-display-wrap');
+      if (typeof sourceWrap !== 'undefined' && sourceWrap !== false) {
+        selectTD.attr('data-display-wrap','');
       }
 
       //remove and add the center alignment:
-      targetTD.removeAttr('data-display-center');
-      if (table_columns[data_column][3] == true) {
-        targetTD.attr('data-display-center','');
+      selectTD.removeAttr('data-display-center');
+      if (typeof sourceCenter !== 'undefined' && sourceCenter !== false) {
+        selectTD.attr('data-display-center','');
       }
 
-      targetTD.text(cell_data);
-      counter ++;
+      sourceTDdata = $(this).find('td:nth-of-type(' + sourceIndex + ')').text();
+      selectTD.text(sourceTDdata);
+
+
     });
   }
 
