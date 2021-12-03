@@ -28,7 +28,9 @@
 
       $(document).ready(function() {
         smartColumnsBuilder('table#data',{ });
-        smartColumns('table#data',{ });
+        smartColumns('table#data',{
+          freezeFirstColumn: false
+        });
       }); // end doc ready
 
     </script>
