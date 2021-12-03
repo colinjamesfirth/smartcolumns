@@ -66,6 +66,12 @@ table tr[data-row-clickable]:hover {
 
 /* SMART COLUMNS STYLES */
 
+.smartcol-container {
+  /* being explicit, because these are ciritical to the component working */
+  display: block;
+  width: 100%;
+}
+
 .smartcol-container table {
   box-sizing: border-box;
   table-layout: fixed;
