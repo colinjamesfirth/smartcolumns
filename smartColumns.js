@@ -19,7 +19,7 @@ function smartColumns(target,options) {
   (function() {
 
 //TODO: not sure why this is here:
-var firstHidden = $(target).find("thead th:hidden:first").index();
+//var firstHidden = $(target).find("thead th:hidden:first").index();
 
     //create the select menu:
     selectMenu = '<select data-column-auto aria-label="Choose the data for this column">\n';
