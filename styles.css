@@ -1,3 +1,5 @@
+/* GENERAL STYLES */
+
 * {
   box-sizing: border-box;
 }
@@ -6,96 +8,6 @@ html {
 }
 body {
   font-size: inherit;
-}
-
-table {
-  font-size: 1rem;
-}
-
-table.table-responsive {
-  table-layout: fixed;
-  border-collapse: collapse;
-  border: 1px solid grey;
-  width: 100%;
-  max-width: 100%;
-  text-align: left;
-}
-
-table.table-responsive thead th {
-  background: #e5e5e5;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-table.table-responsive th,
-table.table-responsive td {
-  padding: 1rem 0.75rem;
-  box-sizing: border-box;
-  border-bottom: 1px solid grey;
-}
-
-table.table-responsive [data-smartcol-wrap] {
-  word-break: break-word;
-  overflow-wrap: break-word;
-}
-table.table-responsive [data-smartcol-center] {
-  text-align: center;
-  padding-left: 0.25em;
-  padding-right: 0.25em;
-}
-
-table.table-responsive th:not(:first-child),
-table.table-responsive td:not(:first-child) {
-  border-left: 1px solid grey;
-}
-
-table.table-responsive th[data-smartcol-width="auto"] {
-  width: auto;
-}
-table.table-responsive th[data-smartcol-width="narrow"] {
-  width: 5rem;
-}
-table.table-responsive th:not([data-smartcol-width]),
-table.table-responsive th[data-smartcol-width="normal"] {
-  width: 10rem;
-}
-table.table-responsive th[data-smartcol-width="wide"] {
-  width: 15rem;
-}
-
-@media screen and (max-width: 400px) {
-  table.table-responsive th:not([data-smartcol-width]),
-  table.table-responsive th[data-smartcol-width="auto"],
-  table.table-responsive th[data-smartcol-width="narrow"],
-  table.table-responsive th[data-smartcol-width="normal"],
-  table.table-responsive th[data-smartcol-width="wide"] {
-    width: auto;
-  }
-}
-
-table.table-responsive tr[data-row-clickable] {
-  cursor: pointer;
-}
-table.table-responsive tr[data-row-clickable]:hover {
-  background: #e5e5e5;
-}
-
-table.table-responsive .actions-column {
-  text-align: center;
-}
-
-table.table-responsive .actions-column span {
-  display: inline-flex;
-  justify-content: space-between;
-  gap: 0.5em;
-}
-
-table.table-responsive thead th {
-  position: relative;
-}
-
-table.table-responsive th[data-column-selectable]:after {
-  content: "\00a0";
 }
 
 button,
@@ -123,7 +35,101 @@ button:focus {
   border: 1px solid #333;
 }
 
-table.table-responsive thead select {
+
+
+/* SMART COLUMNS STYLES */
+
+.smart-columns-container table {
+  font-size: 1rem;
+}
+
+.smart-columns-container table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 1px solid grey;
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+}
+
+.smart-columns-container table thead th {
+  background: #e5e5e5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.smart-columns-container table th,
+.smart-columns-container table td {
+  padding: 1rem 0.75rem;
+  box-sizing: border-box;
+  border-bottom: 1px solid grey;
+}
+
+.smart-columns-container table [data-smartcol-wrap] {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+.smart-columns-container table [data-smartcol-center] {
+  text-align: center;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
+
+.smart-columns-container table th:not(:first-child),
+.smart-columns-container table td:not(:first-child) {
+  border-left: 1px solid grey;
+}
+
+.smart-columns-container table th[data-smartcol-width="auto"] {
+  width: auto;
+}
+.smart-columns-container table th[data-smartcol-width="narrow"] {
+  width: 5rem;
+}
+.smart-columns-container table th:not([data-smartcol-width]),
+.smart-columns-container table th[data-smartcol-width="normal"] {
+  width: 10rem;
+}
+.smart-columns-container table th[data-smartcol-width="wide"] {
+  width: 15rem;
+}
+
+@media screen and (max-width: 400px) {
+  .smart-columns-container table th:not([data-smartcol-width]),
+  .smart-columns-container table th[data-smartcol-width="auto"],
+  .smart-columns-container table th[data-smartcol-width="narrow"],
+  .smart-columns-container table th[data-smartcol-width="normal"],
+  .smart-columns-container table th[data-smartcol-width="wide"] {
+    width: auto;
+  }
+}
+
+.smart-columns-container table tr[data-row-clickable] {
+  cursor: pointer;
+}
+.smart-columns-container table tr[data-row-clickable]:hover {
+  background: #e5e5e5;
+}
+
+.smart-columns-container table .actions-column {
+  text-align: center;
+}
+
+.smart-columns-container table .actions-column span {
+  display: inline-flex;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.smart-columns-container table thead th {
+  position: relative;
+}
+
+.smart-columns-container table th[data-column-selectable]:after {
+  content: "\00a0";
+}
+
+.smart-columns-container table thead select {
   position: absolute;
   inset: 0 0 0 0;
   font-weight: bold;
@@ -135,9 +141,10 @@ table.table-responsive thead select {
   background: #e5e5e5;
   border-radius: 0;
 }
-table.table-responsive thead select:hover,
-table.table-responsive thead select:focus {
+.smart-columns-container table thead select:hover,
+.smart-columns-container table thead select:focus {
   background: #666666;
   border-color: #666666;
   color: white;
 }
+

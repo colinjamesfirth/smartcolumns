@@ -11,7 +11,7 @@ function smartColumns(target,options) {
   o = { ...optionDefaults, ...(options || {}) };
 
   /* Wrap the target table in a block level div so we can measure the width of the containing space (also used for CSS selectors) */
-  $(target).wrap('<div class="table-container"></div>');
+  $(target).wrap('<div class="smart-columns-container"></div>');
 
   var selectColPos = (o.hasActionsColumn === true) ? 2 : 1;
 
@@ -50,7 +50,7 @@ function smartColumns(target,options) {
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
   function hideDataColumns(target,o,selectColPos) {
     widthTable = $(target).outerWidth();
-    widthContainer = $(target).closest('.table-container').outerWidth();
+    widthContainer = $(target).closest('.smart-columns-container').outerWidth();
 
     var widthFirstColumn = 0;
     var firstHideableColumn = 0;
