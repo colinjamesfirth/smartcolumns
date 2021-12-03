@@ -36,113 +36,120 @@ button:focus {
 }
 
 
+table {
+  border: 1px solid grey;
+  font-size: 1rem;
+  text-align: left;
+}
+table th {
+  background: #e5e5e5;
+}
+table th,
+table td {
+  padding: 1rem 0.75rem;
+  border-bottom: 1px solid grey;
+}
+
+table th:not(:first-child),
+table td:not(:first-child) {
+  border-left: 1px solid grey;
+}
+
+/* additional styles for if we have the clickable rows (an early feature that was moved out of smartColumn for being out of scope) */
+table tr[data-row-clickable] {
+  cursor: pointer;
+}
+table tr[data-row-clickable]:hover {
+  background: #e5e5e5;
+}
+
 
 /* SMART COLUMNS STYLES */
 
-.smart-columns-container table {
-  font-size: 1rem;
-}
-
-.smart-columns-container table {
+.smartcol-container table {
+  box-sizing: border-box;
   table-layout: fixed;
   border-collapse: collapse;
-  border: 1px solid grey;
   width: 100%;
   max-width: 100%;
-  text-align: left;
 }
 
-.smart-columns-container table thead th {
-  background: #e5e5e5;
+.smartcol-container table thead th {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.smart-columns-container table th,
-.smart-columns-container table td {
-  padding: 1rem 0.75rem;
+.smartcol-container table th,
+.smartcol-container table td {
   box-sizing: border-box;
-  border-bottom: 1px solid grey;
 }
 
-.smart-columns-container table [data-smartcol-wrap] {
+.smartcol-container table [data-smartcol-wrap] {
   word-break: break-word;
   overflow-wrap: break-word;
 }
-.smart-columns-container table [data-smartcol-center] {
+.smartcol-container table [data-smartcol-center] {
   text-align: center;
   padding-left: 0.25em;
   padding-right: 0.25em;
 }
 
-.smart-columns-container table th:not(:first-child),
-.smart-columns-container table td:not(:first-child) {
-  border-left: 1px solid grey;
-}
-
-.smart-columns-container table th[data-smartcol-width="auto"] {
+.smartcol-container table th[data-smartcol-width="auto"] {
   width: auto;
 }
-.smart-columns-container table th[data-smartcol-width="narrow"] {
+.smartcol-container table th[data-smartcol-width="narrow"] {
   width: 5rem;
 }
-.smart-columns-container table th:not([data-smartcol-width]),
-.smart-columns-container table th[data-smartcol-width="normal"] {
+.smartcol-container table th:not([data-smartcol-width]),
+.smartcol-container table th[data-smartcol-width="normal"] {
   width: 10rem;
 }
-.smart-columns-container table th[data-smartcol-width="wide"] {
+.smartcol-container table th[data-smartcol-width="wide"] {
   width: 15rem;
 }
 
 @media screen and (max-width: 400px) {
-  .smart-columns-container table th:not([data-smartcol-width]),
-  .smart-columns-container table th[data-smartcol-width="auto"],
-  .smart-columns-container table th[data-smartcol-width="narrow"],
-  .smart-columns-container table th[data-smartcol-width="normal"],
-  .smart-columns-container table th[data-smartcol-width="wide"] {
+  .smartcol-container table th:not([data-smartcol-width]),
+  .smartcol-container table th[data-smartcol-width="auto"],
+  .smartcol-container table th[data-smartcol-width="narrow"],
+  .smartcol-container table th[data-smartcol-width="normal"],
+  .smartcol-container table th[data-smartcol-width="wide"] {
     width: auto;
   }
 }
 
-.smart-columns-container table tr[data-row-clickable] {
-  cursor: pointer;
-}
-.smart-columns-container table tr[data-row-clickable]:hover {
-  background: #e5e5e5;
-}
-
-.smart-columns-container table .actions-column {
+.smartcol-container table .actions-column {
   text-align: center;
 }
 
-.smart-columns-container table .actions-column span {
+.smartcol-container table .actions-column span {
   display: inline-flex;
   justify-content: space-between;
   gap: 0.5em;
 }
 
-.smart-columns-container table thead th {
+.smartcol-container table thead th[data-smartcol-selectable] {
   position: relative;
 }
 
-.smart-columns-container table th[data-column-selectable]:after {
+.smartcol-container table th[data-smartcol-selectable]:after {
   content: "\00a0";
 }
 
-.smart-columns-container table thead select {
+.smartcol-container table thead th[data-smartcol-selectable] select {
   position: absolute;
   inset: 0 0 0 0;
-  font-weight: bold;
+  width: 100%;
+  padding-bottom: 0.25rem;
   border: none;
   border-top: 0.25rem solid grey;
-  padding-bottom: 0.25rem;
-  outline: 0;
-  width: 100%;
-  background: #e5e5e5;
   border-radius: 0;
+  outline: 0;
+  background: transparent;
+  font-weight: inherit;
 }
-.smart-columns-container table thead select:hover,
-.smart-columns-container table thead select:focus {
+.smartcol-container table thead th[data-smartcol-selectable] select:hover,
+.smartcol-container table thead th[data-smartcol-selectable] select:focus {
   background: #666666;
   border-color: #666666;
   color: white;
