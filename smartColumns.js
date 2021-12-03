@@ -19,7 +19,7 @@ function smartColumns(target,options) {
   (function() {
 
     //create the select menu:
-    selectMenu = '<select data-smartcol-auto aria-label="Choose the data for this column">\n';
+    selectMenu = '<select aria-label="Choose the data for this column">\n';
     $(target).find('thead th[data-smartcol-index]').each(function() {
       v = $(this).attr('data-smartcol-index');
       t = $(this).text();
@@ -28,7 +28,7 @@ function smartColumns(target,options) {
     selectMenu += '</select>\n';
 
     //add the new th in the thead for the selctable column:
-    $(target).find('thead tr th:nth-last-of-type(' + selectColPos + ')').after('<th data-smartcol-slectable>' + selectMenu + '</th>\n');
+    $(target).find('thead tr th:nth-last-of-type(' + selectColPos + ')').after('<th data-smartcol-selectable data-smartcol-auto>' + selectMenu + '</th>\n');
 
     //add a new td in every tbody row for the selctable column:
     $(target).find('tbody tr td:nth-last-of-type(' + selectColPos + ')').each( function() {
@@ -36,9 +36,12 @@ function smartColumns(target,options) {
     });
 
     /* Add a change event to the select menu to check for user input */
-    $(target).on('change','th[data-smartcol-slectable] select',function() {
+    $(target).on('change','th[data-smartcol-selectable] select',function() {
+      //remove the data-smartcol-auto attribute, because we want this column to be fixed now:
+      $(this).closest('th[data-smartcol-selectable]').removeAttr('data-smartcol-auto');
+
+      //set the column data based on the selection:
       var data_column = $(this).val();
-      $(this).removeAttr('data-smartcol-auto');
       selectableColumn_set(target,data_column);
     });
 
@@ -140,7 +143,7 @@ function smartColumns(target,options) {
   /* Automatically set the selectable column */
   /* If selectable column is set to auto (default on page load), show the data for the first hidden column. This dynamically changes the data in the selectable column as data columns hide and show. Run at page load and on window resize */
   function selectableColumn_auto(target) {
-    var auto = $(target).find('th[data-smartcol-slectable] select').attr('data-smartcol-auto');
+    var auto = $(target).find('th[data-smartcol-selectable]').attr('data-smartcol-auto');
     if (typeof auto !== 'undefined' && auto !== false) {
       var firstHidden = $(target).find('thead th:hidden:first').attr('data-smartcol-index');
       selectableColumn_set(target,firstHidden);
@@ -155,9 +158,9 @@ function smartColumns(target,options) {
   function selectableColumn_set(target,data_column) {
 
     //get the index of the selectable column, so we know where to put the data:
-    var selectIndex = $(target).find('th[data-smartcol-slectable]').index() + 1;
+    var selectIndex = $(target).find('th[data-smartcol-selectable]').index() + 1;
 
-    var selectTH = $(target).find('th[data-smartcol-slectable]');
+    var selectTH = $(target).find('th[data-smartcol-selectable]');
     var sourceTH = $(target).find('th[data-smartcol-index="' + data_column + '"]');
     var sourceIndex = sourceTH.attr('data-smartcol-index');
     var sourceSize = sourceTH.attr('data-smartcol-width');
