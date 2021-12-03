@@ -18,9 +18,6 @@ function smartColumns(target,options) {
   /* Build the selectable column */
   (function() {
 
-//TODO: not sure why this is here:
-//var firstHidden = $(target).find("thead th:hidden:first").index();
-
     //create the select menu:
     selectMenu = '<select data-column-auto aria-label="Choose the data for this column">\n';
     $(target).find('thead th[data-column-index]').each(function() {
@@ -161,7 +158,6 @@ function smartColumns(target,options) {
     var selectIndex = $(target).find('th[data-column-selectable]').index() + 1;
 
     var selectTH = $(target).find('th[data-column-selectable]');
-
     var sourceTH = $(target).find('th[data-column-index="' + data_column + '"]');
     var sourceIndex = sourceTH.attr('data-column-index');
     var sourceSize = sourceTH.attr('data-column-size');
@@ -193,7 +189,6 @@ function smartColumns(target,options) {
 
       sourceTDdata = $(this).find('td:nth-of-type(' + sourceIndex + ')').text();
       selectTD.text(sourceTDdata);
-
 
     });
   }
