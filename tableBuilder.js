@@ -1,5 +1,5 @@
 
-  function smartTableBuilder(target,options) {
+  function smartColumnsBuilder(target,options) {
 
 
     let optionDefaults = {

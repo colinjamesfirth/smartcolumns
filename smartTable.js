@@ -1,4 +1,4 @@
-function smartTable(target,options) {
+function smartColumns(target,options) {
   let optionDefaults = {
     cellXPadding: 0.75, //rem
     baseRemPX: parseFloat(getComputedStyle(document.documentElement).fontSize),
@@ -179,4 +179,4 @@ function smartTable(target,options) {
     });
   }
 
-} //ends smartTable initialisation
+} //ends smartColumns initialisation
