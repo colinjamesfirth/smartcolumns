@@ -32,7 +32,9 @@
 
       $(document).ready(function() {
         smartTableBuilder('table#data',{ });
-        smartTable('table#data',{ });
+        smartTable('table#data',{
+          freezeFirstColumn: true
+        });
       }); // end doc ready
 
     </script>

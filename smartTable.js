@@ -5,7 +5,7 @@ function smartTable(target,options) {
     columnWidthNarrow: 5, //rem
     columnWidthNormal: 10, //rem
     columnWidthWide: 15, //rem
-    ignoreFirstColumn: true,
+    freezeFirstColumn: true,
     hasActionsColumn: true
   }
   o = { ...optionDefaults, ...(options || {}) };
@@ -43,18 +43,23 @@ function smartTable(target,options) {
     widthTable = $(target).outerWidth();
     widthContainer = $(target).closest('.table-container').outerWidth();
 
-    var widthFirstColumn = table_columns[0][1];
-    if (widthFirstColumn == 'auto') {
-      widthFirstColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
-    }
-    else if (widthFirstColumn == 'narrow') {
-      widthFirstColumn = (o.columnWidthNarrow * o.baseRemPX) + 1;
-    }
-    else if (widthFirstColumn == 'normal') {
-      widthFirstColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
-    }
-    else if (widthFirstColumn == 'wide') {
-      widthFirstColumn = (o.columnWidthWide * o.baseRemPX) + 1;
+    var widthFirstColumn = 0;
+    var firstHideableColumn = 0;
+    if (o.freezeFirstColumn === true) {
+      var firstHideableColumn = 1;
+      var firstColumnSizeKeyword = $(target).find('thead th:first-of-type').attr('data-column-size');
+      if (firstColumnSizeKeyword == 'auto') {
+        widthFirstColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
+      }
+      else if (firstColumnSizeKeyword == 'narrow') {
+        widthFirstColumn = (o.columnWidthNarrow * o.baseRemPX) + 1;
+      }
+      else if (firstColumnSizeKeyword == 'normal') {
+        widthFirstColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
+      }
+      else if (firstColumnSizeKeyword == 'wide') {
+        widthFirstColumn = (o.columnWidthWide * o.baseRemPX) + 1;
+      }
     }
 
     var widestColumn = null;
@@ -82,7 +87,7 @@ function smartTable(target,options) {
     var counter = 1;
     var sum = 0;
 
-    $(target).find('thead th:not(:first-child):not(:nth-last-of-type(-n+' + selectColPos + '))').each( function() {
+    $(target).find('thead th:not(:nth-of-type(' + firstHideableColumn + ')):not(:nth-last-of-type(-n+' + selectColPos + '))').each( function() {
       columnSize = $(this).attr('data-column-size');
       if (columnSize == 'auto') {
         cellWidth = (o.columnWidthNormal * o.baseRemPX) + 1;
@@ -98,17 +103,20 @@ function smartTable(target,options) {
       }
 
       sum += cellWidth;
+      //if adding this column to the sum has put it over the available width, hide it:
       if (sum > widthTableAvailable) {
         $(this).hide();
         $(target).find('tbody tr').each( function() {
           $(this).find('td').eq(counter).hide();
         })
+      //else if this is the last last data column, hide it regardless of anything else because we always replace the last column with the selectable column:
       } else if ( $(this).is(':nth-last-of-type(' + (selectColPos + 1) +')') ) {
         $(this).hide();
         $(target).find('tbody tr').each( function() {
           $(this).find('td').eq(counter).hide();
         })
       }
+      //else this is a column we can show
       else {
         $(this).show();
         $(target).find('tbody tr').each( function() {
@@ -139,6 +147,7 @@ function smartTable(target,options) {
 
   /* Sets the selectable column's data when we need to put data into it */
   function selectableColumn_set(target,data_column) {
+    console.log(data_column);
     select_column_index = $(target).find('th[data-column-selectable]').index();
     counter = 0;
 

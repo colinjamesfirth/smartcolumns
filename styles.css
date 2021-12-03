@@ -63,6 +63,16 @@ table.table-responsive th[data-column-size="wide"] {
   width: 15rem;
 }
 
+@media screen and (max-width: 400px) {
+  table.table-responsive th:not([data-column-size]),
+  table.table-responsive th[data-column-size="auto"],
+  table.table-responsive th[data-column-size="narrow"],
+  table.table-responsive th[data-column-size="normal"],
+  table.table-responsive th[data-column-size="wide"] {
+    width: auto;
+  }
+}
+
 table.table-responsive tr[data-row-clickable] {
   cursor: pointer;
 }
@@ -82,6 +92,10 @@ table.table-responsive .actions-column span {
 
 table.table-responsive thead th {
   position: relative;
+}
+
+table.table-responsive th[data-column-selectable]:after {
+  content: "\00a0";
 }
 
 button,
