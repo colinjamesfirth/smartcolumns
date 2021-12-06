@@ -94,11 +94,7 @@ function smartColumns(target,options) {
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
   function hideDataColumns(target,o,selectColPos,widthActionsContent) {
     let widthTable = $(target).outerWidth();
-    output(target,'wdthTable',widthTable);
-
     let widthContainer = $(target).closest('.smartcol-container').width();
-    output(target,'wdthContainer',widthContainer);
-
     let widthFirstColumn = 0;
     let firstHideableColumn = 0;
 
@@ -120,7 +116,10 @@ function smartColumns(target,options) {
     }
 
     let widestColumn = null;
-    if ( $(target).find('thead th[data-smartcol-width="wide"]').length ) {
+    if ( $(target).find('thead th[data-smartcol-width="stretch"]').length ) {
+      widestColumn = (o.columnWidthWide * o.baseRemPX) + 1;
+    }
+    else if ( $(target).find('thead th[data-smartcol-width="wide"]').length ) {
       widestColumn = (o.columnWidthWide * o.baseRemPX) + 1;
     }
     else if ( $(target).find('thead th[data-smartcol-width="normal"]').length ) {
@@ -128,9 +127,6 @@ function smartColumns(target,options) {
     }
     else if ( $(target).find('thead th[data-smartcol-width="narrow"]').length ) {
       widestColumn = (o.columnWidthNarrow * o.baseRemPX) + 1;
-    }
-    else if ( $(target).find('thead th[data-smartcol-width="stretch"]').length ) {
-      widestColumn = (o.columnWidthWide * o.baseRemPX) + 1;
     }
 
     widthTableAvailable = widthContainer - (widthFirstColumn + widestColumn + widthActionsContent);
@@ -183,34 +179,6 @@ function smartColumns(target,options) {
   });
 
 
-  function stretchColumns(target,o) {
-    let stretchBaseWidth = (o.columnWidthWide * o.baseRemPX) + 1;
-    let counter = 0;
-    let sum = 0;
-
-    $(target).find('thead th[data-smartcol-width="stretch"]').each(function() {
-      if ( $(this).is(':visible') ) {
-        sum += $(this).width();
-        counter ++;
-      }
-    });
-    widthStretch = sum / counter;
-    console.log(counter);
-
-    $(target).find('thead th[data-smartcol-width="stretch"]').removeClass('pink');
-
-    if (widthStretch >= stretchBaseWidth) {
-      $(target).find('thead th[data-smartcol-width="stretch"]').addClass('pink');
-    } else {
-    }
-
-  }
-  stretchColumns(target,o);
-  $(window).resize( function() {
-    stretchColumns(target,o);
-  });
-
-
   /* Automatically set the selectable column */
   /* If selectable column is set to auto (default on page load), show the data for the first hidden column. This dynamically changes the data in the selectable column as data columns hide and show. Run at page load and on window resize */
   function selectableColumn_auto(target) {
@@ -224,6 +192,34 @@ function smartColumns(target,options) {
   $(window).resize( function() {
     selectableColumn_auto(target);
   });
+
+
+
+  function stretchColumns(target,o) {
+    let stretchBaseWidth = (o.columnWidthWide * o.baseRemPX) + 1;
+    let counter = 0;
+    let sum = 0;
+
+    $(target).find('thead th[data-smartcol-width="stretch"]').each(function() {
+      if ( $(this).is(':visible') ) {
+        sum += $(this).width();
+        counter ++;
+      }
+    });
+    widthStretch = sum / counter;
+
+    $(target).find('thead th[data-smartcol-width="stretch"]').removeClass('pink');
+
+    if (widthStretch >= stretchBaseWidth) {
+      $(target).find('thead th[data-smartcol-width="stretch"]').addClass('pink');
+    }
+  }
+
+
+
+
+
+
 
   /* Sets the selectable column's data when we need to put data into it */
   function selectableColumn_set(target,data_column) {
