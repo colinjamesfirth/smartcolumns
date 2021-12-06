@@ -108,11 +108,6 @@ table caption {
   padding-right: 0.25em;
 }
 
-/*
-.smartcol-container table th[data-smartcol-width="auto"] {
-  width: auto;
-}
-*/
 .smartcol-container table th[data-smartcol-width="narrow"] {
   width: 5rem;
 }
@@ -125,19 +120,8 @@ table caption {
   width: 15rem;
 }
 
-.smartcol-container table th[data-smartcol-width="stretch"].smartcol-stretch-auto {
+.smartcol-container table th[data-smartcol-width].smartcol-width-auto {
   width: auto;
-}
-
-
-@media screen and (max-width: 400px) {
-  .smartcol-container table th:not([data-smartcol-width]),
-  .smartcol-container table th[data-smartcol-width="narrow"],
-  .smartcol-container table th[data-smartcol-width="normal"],
-  .smartcol-container table th[data-smartcol-width="wide"],
-  .smartcol-container table th[data-smartcol-width="stretch"] {
-    width: auto;
-  }
 }
 
 .smartcol-container th[data-smartcol-actions] {
