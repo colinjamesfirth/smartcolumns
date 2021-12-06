@@ -8,13 +8,14 @@ function output(target,name,value) {
 
 function smartColumns(target,options) {
   let optionDefaults = {
-    cellXPadding: 0.75, //rem
-    baseRemPX: parseFloat(getComputedStyle(document.documentElement).fontSize),
-    columnWidthNarrow: 5, //rem
-    columnWidthNormal: 10, //rem
-    columnWidthWide: 15, //rem
     freezeFirstColumn: true,
     hasActionsColumn: true,
+    maxVisibleColumns: 100,
+    columnWidthNarrow_rem: 5, //rem
+    columnWidthNormal_rem: 10, //rem
+    columnWidthWide_rem: 15, //rem
+    cellXPadding_rem: 0.75, //rem
+    baseFontSize_px: parseFloat(getComputedStyle(document.documentElement).fontSize),
     widthTable: 0,
     widthContainer: 0,
     widthTableAvailable: 0
@@ -71,7 +72,7 @@ function smartColumns(target,options) {
 
     //measure the width, calculate the fixed width and apply it:
     widthActionsContent = $(target).find('tbody tr:first-child span[data-smartcol-actions-wrap]').width();
-    widthActionsContent = widthActionsContent + ((o.cellXPadding * o.baseRemPX) * 2);
+    widthActionsContent = widthActionsContent + ((o.cellXPadding_rem * o.baseFontSize_px) * 2);
 
     function updateActionsColumnWidth() {
       let widthContainer = $(target).closest('.smartcol-container').outerWidth();
@@ -94,36 +95,38 @@ function smartColumns(target,options) {
     let widthContainer = $(target).closest('.smartcol-container').width();
     let widthFirstColumn = 0;
     let firstHideableColumn = 0;
+    let counter_visible = 1;
 
     if (o.freezeFirstColumn === true) {
       firstHideableColumn = 1;
+      counter_visible = counter_visible + 1;
       let firstColumnSizeKeyword = $(target).find('thead th:first-of-type').attr('data-smartcol-width');
       if (firstColumnSizeKeyword == 'stretch') {
-        widthFirstColumn = (o.columnWidthWide * o.baseRemPX) + 1;
+        widthFirstColumn = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
       }
       else if (firstColumnSizeKeyword == 'narrow') {
-        widthFirstColumn = (o.columnWidthNarrow * o.baseRemPX) + 1;
+        widthFirstColumn = (o.columnWidthNarrow_rem * o.baseFontSize_px) + 1;
       }
       else if (firstColumnSizeKeyword == 'normal') {
-        widthFirstColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
+        widthFirstColumn = (o.columnWidthNormal_rem * o.baseFontSize_px) + 1;
       }
       else if (firstColumnSizeKeyword == 'wide') {
-        widthFirstColumn = (o.columnWidthWide * o.baseRemPX) + 1;
+        widthFirstColumn = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
       }
     }
 
     let widestColumn = null;
     if ( $(target).find('thead th[data-smartcol-width="stretch"]').length ) {
-      widestColumn = (o.columnWidthWide * o.baseRemPX) + 1;
+      widestColumn = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
     }
     else if ( $(target).find('thead th[data-smartcol-width="wide"]').length ) {
-      widestColumn = (o.columnWidthWide * o.baseRemPX) + 1;
+      widestColumn = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
     }
     else if ( $(target).find('thead th[data-smartcol-width="normal"]').length ) {
-      widestColumn = (o.columnWidthNormal * o.baseRemPX) + 1;
+      widestColumn = (o.columnWidthNormal_rem * o.baseFontSize_px) + 1;
     }
     else if ( $(target).find('thead th[data-smartcol-width="narrow"]').length ) {
-      widestColumn = (o.columnWidthNarrow * o.baseRemPX) + 1;
+      widestColumn = (o.columnWidthNarrow_rem * o.baseFontSize_px) + 1;
     }
 
     widthTableAvailable = widthContainer - (widthFirstColumn + widestColumn + widthActionsContent);
@@ -145,21 +148,27 @@ function smartColumns(target,options) {
       let columnSize = $(this).attr('data-smartcol-width');
       let cellWidth = 0;
       if (columnSize == 'stretch') {
-        cellWidth = (o.columnWidthWide * o.baseRemPX) + 1;
+        cellWidth = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
       }
       else if (columnSize == 'narrow') {
-        cellWidth = (o.columnWidthNarrow * o.baseRemPX) + 1;
+        cellWidth = (o.columnWidthNarrow_rem * o.baseFontSize_px) + 1;
       }
       else if (columnSize == 'normal') {
-        cellWidth = (o.columnWidthNormal * o.baseRemPX) + 1;
+        cellWidth = (o.columnWidthNormal_rem * o.baseFontSize_px) + 1;
       }
       else if (columnSize == 'wide') {
-        cellWidth = (o.columnWidthWide * o.baseRemPX) + 1;
+        cellWidth = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
       }
 
       sum += cellWidth;
-      //if adding this column to the sum has put it over the available width, hide it:
-      if (sum > widthTableAvailable) {
+
+      if ( counter_visible >= o.maxVisibleColumns) {
+        $(this).hide();
+        $(target).find('tbody tr').each( function() {
+          $(this).find('td').eq(counter).hide();
+        })
+      } //if adding this column to the sum has put it over the available width, hide it:
+      else if (sum > widthTableAvailable) {
         $(this).hide();
         $(target).find('tbody tr').each( function() {
           $(this).find('td').eq(counter).hide();
@@ -179,8 +188,8 @@ function smartColumns(target,options) {
         })
       }
       counter ++;
+      counter_visible ++;
     });
-
   }
   hideDataColumns(target,o,selectColPos,widthActionsContent);
   $(window).resize( function() {
@@ -203,7 +212,7 @@ function smartColumns(target,options) {
   });
 
   function stretchColumns(target,o) {
-    let stretchBaseWidth = (o.columnWidthWide * o.baseRemPX) + 1;
+    let stretchBaseWidth = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
     let counter = 0;
     let sum = 0;
 
