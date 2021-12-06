@@ -1,11 +1,3 @@
-
-
-function output(target,name,value) {
-  $(target).find('caption .' + name).remove();
-  let output = '<span class="' + name + '"> | ' + name + ': ' + value + '</span>';
-  $(target).find('caption').append(output);
-}
-
 function smartColumns(target,options) {
   let optionDefaults = {
     freezeFirstColumn: true,
