@@ -44,48 +44,48 @@ You can change default variables for various options during initialisation:
 </pre>
 
 ### freezeFirstColumn
-Default: true
+- Default: true
 
 The first data column is always visible. When the screen narrows, the first column from the left that can be hidden or converted to the selectable column is the second data column.
 
 ### hasActionsColumn
-Default: true
+- Default: true
 
 If your table has an actions column (a column of buttons or links to perform actions on each row), and the column is the far right column, set this to true and add the attribute `data-smartcol-actions` to the column header.
 
 ### maxVisibleColumns
-Default: 100
+- Default: 100
 
 Set the maximum number of data columns that can be shown, regardless of how wide the browser window or container. Does not count the first column if `maxVisibleColumns` is set to `true`.
 
 ### columnWidthNarrow_rem
-Default: 5
-Unit: rem
+- Default: 5
+- Unit: rem
 
 Sets the base reference width of a narrow column, excluding padding. To make a column a narrow column, add the attribute `data-smartcol-width="narrow"` to the column header.
 
 ### columnWidthNormal_rem
-Default: 10
-Unit: rem
+- Default: 10
+- Unit: rem
 
 Sets the base reference width of a normal column, excluding padding. To make a column a narrow column, add the attribute `data-smartcol-width="normal"` to the column header.
 
 ### columnWidthWide_rem
-Default: 15
-Unit: rem
+- Default: 15
+- Unit: rem
 
 Sets the base reference width of a wide column, excluding padding. To make a column a narrow column, add the attribute `data-smartcol-width="wide"` to the column header.
 
 If a column is set to stretch with `data-smartcol-width="stretch"`, the same reference width as a wide column will be used when calculating available space.
 
 ### cellXPadding_rem
-Default 0.75
-Units: rem
+- Default 0.75
+- Units: rem
 
 Sets the x-axis (left and right) padding for the actions column. This is used to help calculate the fixed width of the actions column and should match the left and right padding used in the css.
 
 ### baseFontSize_px
-Default: the document's base font size
+- Default: the document's base font size
 
 If you need to change the base font size used for various SmartColumns calculations, use this option. But use it cautiously.
 
@@ -95,34 +95,34 @@ If you need to change the base font size used for various SmartColumns calculati
 Various properties can be added to the target table. Some are mandatory, others optional.
 
 ### data-smartcol-index="{int}"
-Type: mandatory
-Element: `table > thead > th`
+- Type: mandatory
+- Element: `table > thead > th`
 
 Give each data column an index number starting with 1 (left most column), working left to right in increments of 1. For example, the second column of data would have `<th data-smartcol-index="2">...</th>` as it's header element.
 
 ### data-smartcol-actions
-Type: mandatory if `hasActionsColumn` is set to `true`
-Element: The `table > thead > th` for the actions column, which should be the last column
+- Type: mandatory if `hasActionsColumn` is set to `true`
+- Element: The `table > thead > th` for the actions column, which should be the last column
 
 If you have an actions column, you must nominate the column using this attribute.
 
 ### data-smartcol-width="{keyword}"
-Type: optional
-Element: `table > thead > th`
-Values: narrow|normal|wide|stretch
-Default: normal
+- Type: optional
+- Element: `table > thead > th`
+- Values: narrow|normal|wide|stretch
+- Default: normal
 
 Choose a base reference width keyword for each data column. Available space is normally distributed proportionally to the various width columns. If one or more columns are set to `stretch`, other columns take their base widths and available space is distributed evenly amongst the `stretch` columns. Actual widths are set during SmartColumns initialisation.
 
 ### data-smartcol-center
-Type: optional
-Element: `table > thead > th`
+- Type: optional
+- Element: `table > thead > th`
 
 Makes the whole column align center;
 
 ### data-smartcol-wrap
-Type: optional
-Element: `table > thead > th`
+- Type: optional
+- Element: `table > thead > th`
 
 Makes the column's data rows wrap long content. Long words (such as email addresses may line break to fit).
 
