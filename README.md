@@ -16,7 +16,7 @@ Displays only the columns that will fit in the available space by putting hidden
 - Is naturally accessible because the output is a particularly basic html table; additional accessibility provided on the select and button elements
 
 
-## Initialising SmartTable
+## Initialising SmartColumns
 
 This early edition of SmartColumns requires JQuery (min 3.3.1).
 
@@ -87,7 +87,7 @@ Sets the x-axis (left and right) padding for the actions column. This is used to
 ### baseFontSize_px
 Default: the document's base font size
 
-If you need to change the base font size used for various SmartTable calculations, use this option. But use it cautiously.
+If you need to change the base font size used for various SmartColumns calculations, use this option. But use it cautiously.
 
 
 ## Table properties
@@ -112,7 +112,7 @@ Element: `table > thead > th`
 Values: narrow|normal|wide|stretch
 Default: normal
 
-Choose a base reference width keyword for each data column. Available space is normally distributed proportionally to the various width columns. If one or more columns are set to `stretch`, other columns take their base widths and available space is distributed evenly amongst the `stretch` columns. Actual widths are set during SmartTable initialisation.
+Choose a base reference width keyword for each data column. Available space is normally distributed proportionally to the various width columns. If one or more columns are set to `stretch`, other columns take their base widths and available space is distributed evenly amongst the `stretch` columns. Actual widths are set during SmartColumns initialisation.
 
 ### data-smartcol-center
 Type: optional
@@ -131,8 +131,8 @@ Makes the column's data rows wrap long content. Long words (such as email addres
 - When the window is loaded or resized, columns hide and show depending on the space available to show columns at their minimum/preferred width. Columns that don't fit are hidden from right to left (making an assumption that the left-most column is the most important; the right least)
 - If the user hasn't yet manually selected data for the selectable column, the selectable column automatically takes the data from the first hidden column. The column's content therefore changes as columns hide/show when the window resizes
 - If the user has manually selected data for the selectable column, then the column retains that selection even if the window resizes.
-- Column widths are set in the CSS, but SmartTable's column hiding function needs to know those preferred widths to do its calculations
-- The actions column has an inline width using a percentage value, set in SmartTable using javascript based on the width of its content. This is because every row in the table has the same content in that column, but each table might have a different set of actions, so we don't know the width until run time. We can't just tell it to be auto width because the browser will  make that column as wide as it can and shrink all the data columns.
-- If a column is set to wrap, SmartTable only applies the wrap to the appropriate tbody cell (not on the header; we don't normally want headers to wrap)
-- If a column is to to align centre, SmartTable applies the centring style to the appropriate head th AND body td's (both need to be centre).
-- The selectable column's width changes depending on the width setting of the source column. To ensure the column hiding doesn't change abruptly when different width data is selected, SmartTable reserves enough width for the select column to accommodate the widest possible column in this table So, if all columns are set to `narrow`, the select column will reserve space for 'narrow' columns; but if there's one `wide` column, a wide space will be reserved.
+- Column widths are set in the CSS, but SmartColumns's column hiding function needs to know those preferred widths to do its calculations
+- The actions column has an inline width using a percentage value, set in SmartColumns using javascript based on the width of its content. This is because every row in the table has the same content in that column, but each table might have a different set of actions, so we don't know the width until run time. We can't just tell it to be auto width because the browser will  make that column as wide as it can and shrink all the data columns.
+- If a column is set to wrap, SmartColumns only applies the wrap to the appropriate tbody cell (not on the header; we don't normally want headers to wrap)
+- If a column is to to align centre, SmartColumns applies the centring style to the appropriate head th AND body td's (both need to be centre).
+- The selectable column's width changes depending on the width setting of the source column. To ensure the column hiding doesn't change abruptly when different width data is selected, SmartColumns reserves enough width for the select column to accommodate the widest possible column in this table So, if all columns are set to `narrow`, the select column will reserve space for 'narrow' columns; but if there's one `wide` column, a wide space will be reserved.
