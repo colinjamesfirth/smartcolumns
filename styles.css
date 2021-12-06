@@ -40,6 +40,7 @@ table {
   border: 1px solid grey;
   font-size: 1rem;
   text-align: left;
+  margin-bottom: 2rem;
 }
 table th {
   background: #e5e5e5;
@@ -63,6 +64,12 @@ table tr[data-row-clickable]:hover {
   background: #e5e5e5;
 }
 
+table caption {
+  background: #e5e5e5;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
 
 /* SMART COLUMNS STYLES */
 
@@ -70,6 +77,9 @@ table tr[data-row-clickable]:hover {
   /* being explicit, because these are ciritical to the component working */
   display: block;
   width: 100%;
+  outline: 2px dashed red;
+  /*max-width: 1480px;*/
+
 }
 
 .smartcol-container table {
@@ -77,7 +87,7 @@ table tr[data-row-clickable]:hover {
   table-layout: fixed;
   border-collapse: collapse;
   width: 100%;
-  max-width: 100%;
+  xmax-width: 100%;
 }
 
 .smartcol-container table thead th {
@@ -100,9 +110,11 @@ table tr[data-row-clickable]:hover {
   padding-right: 0.25em;
 }
 
+/*
 .smartcol-container table th[data-smartcol-width="auto"] {
   width: auto;
 }
+*/
 .smartcol-container table th[data-smartcol-width="narrow"] {
   width: 5rem;
 }
@@ -110,16 +122,18 @@ table tr[data-row-clickable]:hover {
 .smartcol-container table th[data-smartcol-width="normal"] {
   width: 10rem;
 }
-.smartcol-container table th[data-smartcol-width="wide"] {
+.smartcol-container table th[data-smartcol-width="wide"],
+.smartcol-container table th[data-smartcol-width="stretch"] {
   width: 15rem;
 }
 
+
 @media screen and (max-width: 400px) {
   .smartcol-container table th:not([data-smartcol-width]),
-  .smartcol-container table th[data-smartcol-width="auto"],
   .smartcol-container table th[data-smartcol-width="narrow"],
   .smartcol-container table th[data-smartcol-width="normal"],
-  .smartcol-container table th[data-smartcol-width="wide"] {
+  .smartcol-container table th[data-smartcol-width="wide"],
+  .smartcol-container table th[data-smartcol-width="stretch"] {
     width: auto;
   }
 }
@@ -159,4 +173,10 @@ table tr[data-row-clickable]:hover {
   background: #666666;
   border-color: #666666;
   color: white;
+}
+
+
+.pink {
+  background: pink;
+  width: auto !important;
 }
