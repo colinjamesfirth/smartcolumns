@@ -1,4 +1,4 @@
-# Responsive Table
+# SmartColumns
 
 - Created by: Colin James Firth
 - Version: 1.2
