@@ -99,7 +99,7 @@ Various additional properties can be added to the target table. Some are mandato
 - Type: mandatory
 - Element: `table > thead > th`
 
-Add this attribute to the `th` element in the table header for all data columns.
+Add this attribute to the `th` element to the table header for all data columns. All `data-smartcol` columns will be included in the selectable column's menu.
 
 ### data-smartcol-actions
 - Type: mandatory if `hasActionsColumn` is set to `true`

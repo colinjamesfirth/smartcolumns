@@ -17,7 +17,7 @@ function smartColumns(target,options) {
     baseFontSize_px: parseFloat(getComputedStyle(document.documentElement).fontSize),
     widthTable: 0,
     widthContainer: 0,
-    widthTableAvailable: 0
+    widthAvailable: 0
   }
   o = { ...optionDefaults, ...(options || {}) };
 
@@ -25,13 +25,14 @@ function smartColumns(target,options) {
   /* Wrap the target table in a block level div so we can measure the width of the containing space (also used for CSS selectors) */
   $(target).wrap('<div class="smartcol-container"></div>');
 
-  let selectColPos = (o.hasActionsColumn === true) ? 2 : 1;
+  let lastDataColumnIndex = $(target).find('thead th[data-smartcol]').last().index();
+  let lastDataColumnNth = lastDataColumnIndex + 1;
 
   /* Build the selectable column */
   (function() {
     //create the select menu:
     let selectMenu = '<select aria-label="Choose the data for this column">\n';
-    let counter = 1;
+    let counter = 0;
     $(target).find('thead th[data-smartcol]').each(function() {
       $(this).attr('data-smartcol',counter);
       let t = $(this).text();
@@ -41,10 +42,10 @@ function smartColumns(target,options) {
     selectMenu += '</select>\n';
 
     //add the new th in the thead for the selctable column:
-    $(target).find('thead tr th:nth-last-of-type(' + selectColPos + ')').after('<th data-smartcol-selectable data-smartcol-auto>' + selectMenu + '</th>\n');
+    $(target).find('thead tr th:nth-child(' + lastDataColumnNth + ')').after('<th data-smartcol-selectable data-smartcol-auto>' + selectMenu + '</th>\n');
 
     //add a new td in every tbody row for the selctable column:
-    $(target).find('tbody tr td:nth-last-of-type(' + selectColPos + ')').each( function() {
+    $(target).find('tbody tr td:nth-child(' + lastDataColumnNth + ')').each( function() {
       $(this).after('<td></td>\n');
     });
 
@@ -91,17 +92,16 @@ function smartColumns(target,options) {
 
 
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
-  function hideDataColumns(target,o,selectColPos,widthActionsContent) {
+  function hideDataColumns(target,o,lastDataColumnNth,widthActionsContent) {
     let widthTable = $(target).outerWidth();
     let widthContainer = $(target).closest('.smartcol-container').width();
-    let widthFirstColumn = 0;
-    let firstHideableColumn = 0;
+    let firstHideableColumnNth = 1;
     let counter_visible = 1;
+    let widthFirstColumn = 0;
 
     if (o.freezeFirstColumn === true) {
-      firstHideableColumn = 1;
-      counter_visible = counter_visible + 1;
-      let firstColumnSizeKeyword = $(target).find('thead th:first-of-type').attr('data-smartcol-width');
+      firstHideableColumnNth = 2;
+      let firstColumnSizeKeyword = $(target).find('thead th[data-column]').first().attr('data-smartcol-width');
       if (firstColumnSizeKeyword == 'stretch') {
         widthFirstColumn = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
       }
@@ -129,23 +129,20 @@ function smartColumns(target,options) {
     else if ( $(target).find('thead th[data-smartcol-width="narrow"]').length ) {
       widestColumn = (o.columnWidthNarrow_rem * o.baseFontSize_px) + 1;
     }
+    let widthReservedForSelectColumn = widestColumn;
 
-    widthTableAvailable = widthContainer - (widthFirstColumn + widestColumn + widthActionsContent);
+    let widthFixedColumns = widthFirstColumn + widthReservedForSelectColumn + widthActionsContent;
+    let widthAvailable = widthContainer - widthFixedColumns;
 
     o.widthTable = widthTable;
     o.widthContainer = widthContainer;
-    o.widthTableAvailable = widthTableAvailable;
+    o.widthAvailable = widthAvailable;
 
-    if (widthTableAvailable < 0) {
-      $(target).find('th[data-smartcol-width]').addClass('smartcol-width-auto');
-    } else {
-      $(target).find('th[data-smartcol-width]').removeClass('smartcol-width-auto');
-    }
-    stretchColumns(target,o);
-
-    let counter = 1;
+    let counter = 0;
     let sum = 0;
-    $(target).find('thead th:not(:nth-of-type(' + firstHideableColumn + ')):not(:nth-last-of-type(-n+' + selectColPos + '))').each( function() {
+    let sum_visible = 0;
+
+    $(target).find('thead th[data-smartcol]').each( function() {
       let columnSize = $(this).attr('data-smartcol-width');
       let cellWidth = 0;
       if (columnSize == 'stretch') {
@@ -161,40 +158,67 @@ function smartColumns(target,options) {
         cellWidth = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
       }
 
+      //add this columns reference cell width to the sum of columns evaluated so far"
       sum += cellWidth;
 
-      if ( counter_visible >= o.maxVisibleColumns) {
-        $(this).hide();
+      $(target).find('th[data-smartcol-width]').removeClass('smartcol-width-auto');
+
+      //if this is the first column, and we've chosen to freeze it, then show it regardless of anything else:
+      if ((counter === 0) && (o.freezeFirstColumn === true)) {
+        $(this).show();
         $(target).find('tbody tr').each( function() {
-          $(this).find('td').eq(counter).hide();
+          $(this).find('td').eq(counter).show();
         })
-      } //if adding this column to the sum has put it over the available width, hide it:
-      else if (sum > widthTableAvailable) {
-        $(this).hide();
-        $(target).find('tbody tr').each( function() {
-          $(this).find('td').eq(counter).hide();
-        })
-      //else if this is the last last data column, hide it regardless of anything else because we always replace the last column with the selectable column:
-      } else if ( $(this).is(':nth-last-of-type(' + (selectColPos + 1) +')') ) {
+        sum_visible += cellWidth;
+      }
+
+      //else if we've already hit the limit of number of columns we're allowed to show, then hide this one:
+      else if ( counter_visible >= o.maxVisibleColumns) {
         $(this).hide();
         $(target).find('tbody tr').each( function() {
           $(this).find('td').eq(counter).hide();
         })
       }
-      //else this is a column we can show
+
+      //else if adding this column to the sum has put it over the available width, hide it:
+      else if (sum > widthAvailable) {
+        $(this).hide();
+        $(target).find('tbody tr').each( function() {
+          $(this).find('td').eq(counter).hide();
+        })
+
+      //else if this is the last last data column, hide it regardless of anything else because we always replace the last column with the selectable column:
+      } else if ( $(this).is(':nth-child(' + (lastDataColumnNth) +')') ) {
+        $(this).hide();
+        $(target).find('tbody tr').each( function() {
+          $(this).find('td').eq(counter).hide();
+        })
+      }
+
+      //else this must be a column we can show
       else {
         $(this).show();
         $(target).find('tbody tr').each( function() {
           $(this).find('td').eq(counter).show();
         })
+        sum_visible += cellWidth;
       }
+
       counter ++;
       counter_visible ++;
+
+      if (widthAvailable < sum_visible) {
+        $(target).find('th[data-smartcol-width]').addClass('smartcol-width-auto');
+      } else {
+        $(target).find('th[data-smartcol-width]').removeClass('smartcol-width-auto');
+        stretchColumns(target,o);
+      }
+
     });
   }
-  hideDataColumns(target,o,selectColPos,widthActionsContent);
+  hideDataColumns(target,o,lastDataColumnNth,widthActionsContent);
   $(window).resize( function() {
-    hideDataColumns(target,o,selectColPos,widthActionsContent);
+    hideDataColumns(target,o,lastDataColumnNth,widthActionsContent);
   });
 
 
@@ -212,6 +236,7 @@ function smartColumns(target,options) {
     selectableColumn_auto(target);
   });
 
+
   function stretchColumns(target,o) {
     let stretchBaseWidth = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
     let counter = 0;
@@ -225,12 +250,6 @@ function smartColumns(target,options) {
     });
     widthStretch = sum / counter;
 
-    $(target).find('thead th[data-smartcol-width="stretch"]').removeClass('smartcol-width-auto');
-
-    if (o.widthTableAvailable < 0) {
-      $(target).find('thead th[data-smartcol-width="stretch"]').addClass('smartcol-width-auto');
-    }
-
     if (widthStretch >= stretchBaseWidth) {
       $(target).find('thead th[data-smartcol-width="stretch"]').addClass('smartcol-width-auto');
     }
@@ -241,7 +260,7 @@ function smartColumns(target,options) {
   function selectableColumn_set(target,data_column) {
 
     //get the index of the selectable column, so we know where to put the data:
-    let selectIndex = $(target).find('th[data-smartcol-selectable]').index() + 1;
+    let selectIndex = $(target).find('th[data-smartcol-selectable]').index();
 
     let selectTH = $(target).find('th[data-smartcol-selectable]');
     let sourceTH = $(target).find('th[data-smartcol="' + data_column + '"]');
@@ -254,7 +273,6 @@ function smartColumns(target,options) {
     let selectTDdata = undefined;
 
     $(selectTH).removeClass('smartcol-width-auto');
-
     if (sourceAuto === true) {
       $(selectTH).addClass('smartcol-width-auto');
     }
@@ -268,7 +286,7 @@ function smartColumns(target,options) {
 
     //add styling attributes to the body table cells in the selectable column
     $(target).find('tbody tr').each(function() {
-      selectTD = $(this).find('td:nth-of-type(' + (selectIndex + 0) + ')');
+      selectTD = $(this).find('td').eq(selectIndex);
 
       //remove and add the column-wrap:
       selectTD.removeAttr('data-smartcol-wrap');
@@ -282,7 +300,7 @@ function smartColumns(target,options) {
         selectTD.attr('data-smartcol-center','');
       }
 
-      sourceTDdata = $(this).find('td:nth-of-type(' + sourceIndex + ')').text();
+      sourceTDdata = $(this).find('td').eq(sourceIndex).text();
       selectTD.text(sourceTDdata);
 
       stretchColumns(target,o);
