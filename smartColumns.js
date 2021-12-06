@@ -31,10 +31,12 @@ function smartColumns(target,options) {
   (function() {
     //create the select menu:
     let selectMenu = '<select aria-label="Choose the data for this column">\n';
-    $(target).find('thead th[data-smartcol-index]').each(function() {
-      let v = $(this).attr('data-smartcol-index');
+    let counter = 1;
+    $(target).find('thead th[data-smartcol]').each(function() {
+      $(this).attr('data-smartcol',counter);
       let t = $(this).text();
-      selectMenu += '<option value="' + v + '">' + t + '</option>\n';
+      selectMenu += '<option value="' + counter + '">' + t + '</option>\n';
+      counter++;
     });
     selectMenu += '</select>\n';
 
@@ -201,7 +203,7 @@ function smartColumns(target,options) {
   function selectableColumn_auto(target) {
     let auto = $(target).find('th[data-smartcol-selectable]').attr('data-smartcol-auto');
     if (typeof auto !== 'undefined' && auto !== false) {
-      let firstHidden = $(target).find('thead th:hidden:first').attr('data-smartcol-index');
+      let firstHidden = $(target).find('thead th:hidden:first').attr('data-smartcol');
       selectableColumn_set(target,firstHidden);
     }
   }
@@ -242,8 +244,8 @@ function smartColumns(target,options) {
     let selectIndex = $(target).find('th[data-smartcol-selectable]').index() + 1;
 
     let selectTH = $(target).find('th[data-smartcol-selectable]');
-    let sourceTH = $(target).find('th[data-smartcol-index="' + data_column + '"]');
-    let sourceIndex = sourceTH.attr('data-smartcol-index');
+    let sourceTH = $(target).find('th[data-smartcol="' + data_column + '"]');
+    let sourceIndex = sourceTH.attr('data-smartcol');
     let sourceSize = sourceTH.attr('data-smartcol-width');
     let sourceWrap = sourceTH.attr('data-smartcol-wrap');
     let sourceCenter = sourceTH.attr('data-smartcol-center');

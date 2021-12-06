@@ -21,7 +21,7 @@
         if (th[3] == true) {
           isWrap = ' data-smartcol-center';
         }
-        output += '<th data-smartcol-index="' + col_counter + '" data-smartcol-width="' + th[1] + '"' + isWrap + isCenter + '>' + th[0] + '</th>\n';
+        output += '<th data-smartcol data-smartcol-width="' + th[1] + '"' + isWrap + isCenter + '>' + th[0] + '</th>\n';
         col_counter ++;
       });
       output += '</tr>\n</thead>\n';

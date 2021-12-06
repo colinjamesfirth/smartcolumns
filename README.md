@@ -18,9 +18,8 @@ Displays only the columns that will fit in the available space by putting hidden
 
 ## Initialising SmartColumns
 
-This early edition of SmartColumns requires JQuery (min 3.3.1).
-
-Include smartColumn.js and JQuery on the page containing the table(s) you want to apply SmartColumns
+- This early edition of SmartColumns requires JQuery (min 3.3.1).
+- Include smartColumn.js and JQuery on the page containing the table(s) you want to apply SmartColumns
 
 For each table, initialise SmartColumns:
 
@@ -92,13 +91,15 @@ If you need to change the base font size used for various SmartColumns calculati
 
 ## Table properties
 
-Various properties can be added to the target table. Some are mandatory, others optional.
+Tables must have a `thead` and `tbody`. The thead must use `th` cell-level elements.
 
-### data-smartcol-index="{int}"
+Various additional properties can be added to the target table. Some are mandatory, others optional.
+
+### data-smartcol
 - Type: mandatory
 - Element: `table > thead > th`
 
-Give each data column an index number starting with 1 (left most column), working left to right in increments of 1. For example, the second column of data would have `<th data-smartcol-index="2">...</th>` as it's header element.
+Add this attribute to the `th` element in the table header for all data columns.
 
 ### data-smartcol-actions
 - Type: mandatory if `hasActionsColumn` is set to `true`
