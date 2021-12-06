@@ -1,3 +1,10 @@
+/*
+SmartColumns
+by Colin James Firth
+https://github.com/colinjamesfirth/smartcolumns
+verson 1.2
+*/
+
 function smartColumns(target,options) {
   let optionDefaults = {
     freezeFirstColumn: true,
