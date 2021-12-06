@@ -208,10 +208,10 @@ function smartColumns(target,options) {
     });
     widthStretch = sum / counter;
 
-    $(target).find('thead th[data-smartcol-width="stretch"]').removeClass('pink');
+    $(target).find('thead th[data-smartcol-width="stretch"]').removeClass('smartcol-stretch-auto');
 
     if (widthStretch >= stretchBaseWidth) {
-      $(target).find('thead th[data-smartcol-width="stretch"]').addClass('pink');
+      $(target).find('thead th[data-smartcol-width="stretch"]').addClass('smartcol-stretch-auto');
     }
   }
 
@@ -237,7 +237,7 @@ function smartColumns(target,options) {
     let selectTDdata = undefined;
 
     if (sourceSize != 'stretch') {
-      $(selectTH).removeClass('pink');
+      $(selectTH).removeClass('smartcol-stretch-auto');
     }
 
     //change the select menu's selected option to the chosen one:

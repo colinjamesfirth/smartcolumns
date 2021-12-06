@@ -27,7 +27,7 @@
       ];
 
       $(document).ready(function() {
-        smartColumnsBuilder('table#data',{ });
+        smartColumnsBuilder('table#data',table_columns,table_rows,{ });
         smartColumns('table#data',{
           freezeFirstColumn: false
         });
@@ -37,6 +37,6 @@
 
   </head>
   <body>
-    <table id="data"></table>
+    <table id="data"><caption>SmartTable with even width data columns and with first column not fixed</caption></table>
   </body>
 </html>

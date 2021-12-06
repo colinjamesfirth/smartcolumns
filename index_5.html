@@ -21,6 +21,19 @@
         ['Job','normal',false,false],
         ['Narrative','wide',true,false]
       ];
+      var table_columns_2 = [
+        //ColumnName,ColumnWidthIndex,DataWrap,DataCenter
+        ['Name','normal',false,false],
+        ['Email','stretch',true,false],
+        ['Gender','normal',false,false],
+        ['Hair','normal',false,false],
+        ['Eyes','narrow',false,false],
+        ['Age','narrow',false,true],
+        ['Status','normal',false,false],
+        ['Town','normal',false,false],
+        ['Job','normal',false,false],
+        ['Narrative','stretch',true,false]
+      ];
 
       /* Define the row data */
       var table_rows = [
@@ -32,12 +45,15 @@
 
       $(document).ready(function() {
         smartColumnsBuilder('table#data1',table_columns_1,table_rows,{ });
+        smartColumnsBuilder('table#data2',table_columns_2,table_rows,{ });
         smartColumns('table#data1',{ freezeFirstColumn: true });
+        smartColumns('table#data2',{ freezeFirstColumn: true });
       }); // end doc ready
     </script>
 
   </head>
   <body>
     <table id="data1"><caption>Table with standard columns that get a fair distribution of any extra space</caption></table>
+    <table id="data2"><caption>Table with 'stretchable' columns that share any extra space</caption></table>
   </body>
 </html>

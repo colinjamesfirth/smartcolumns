@@ -13,7 +13,7 @@
         ['Name','normal',false,false],
         ['Email','normal',true,false],
         ['Gender','normal',false,false],
-        ['Age','narrow',false,true],
+        ['Age','narrow',false,true]
       ];
 
       /* Define the row data */
@@ -25,7 +25,8 @@
       ];
 
       $(document).ready(function() {
-        smartColumnsBuilder('table#data',{
+
+        smartColumnsBuilder('table#data',table_columns,table_rows,{
           makeActionsColumn: false
         });
         smartColumns('table#data',{
@@ -38,6 +39,6 @@
 
   </head>
   <body>
-    <table id="data" class="table-responsive"></table>
+    <table id="data"><caption>SmartTable without an actions column, and first column is not fixed</caption></table>
   </body>
 </html>

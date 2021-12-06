@@ -77,8 +77,6 @@ table caption {
   /* being explicit, because these are ciritical to the component working */
   display: block;
   width: 100%;
-  outline: 2px dashed red;
-  /*max-width: 1480px;*/
 
 }
 
@@ -87,7 +85,7 @@ table caption {
   table-layout: fixed;
   border-collapse: collapse;
   width: 100%;
-  xmax-width: 100%;
+  max-width: 100%;
 }
 
 .smartcol-container table thead th {
@@ -125,6 +123,10 @@ table caption {
 .smartcol-container table th[data-smartcol-width="wide"],
 .smartcol-container table th[data-smartcol-width="stretch"] {
   width: 15rem;
+}
+
+.smartcol-container table th[data-smartcol-width="stretch"].smartcol-stretch-auto {
+  width: auto;
 }
 
 
@@ -176,7 +178,3 @@ table caption {
 }
 
 
-.pink {
-  background: pink;
-  width: auto !important;
-}
