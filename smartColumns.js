@@ -99,7 +99,6 @@ function smartColumns(target,options) {
       //add this width to the sum of all fixed columns for use later:
       widthFixedColumns_sum += thisColumn_width;
     });
-
   })();
 
   function updateFixedColumnWidths(target,o) {
@@ -117,6 +116,13 @@ function smartColumns(target,options) {
   $(window).resize( function() {
     updateFixedColumnWidths(target,o);
   });
+
+  /* If any data columns don't have a width setting, give them one – making them all 'normal' */
+  (function() {
+    $(target).find('thead th[data-smartcol]:not([data-smartcol-width])').each(function() {
+      $(this).attr('data-smartcol-width','normal');
+    });
+  })();
 
   /* Add each columns' content alignment if set */
   (function() {
