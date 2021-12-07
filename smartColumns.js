@@ -99,6 +99,29 @@ function smartColumns(target,options) {
     updateFixedColumnWidths(target,o);
   });
 
+
+  /* Add each columns' content alignment if set */
+  (function() {
+    $(target).find('thead th[data-smartcol-align]').each(function() {
+      let thisIndex = $(this).index();
+      let thisValue = $(this).attr('data-smartcol-align');
+      $(target).find('tbody tr').each(function() {
+        $(this).find('td').eq(thisIndex).attr('data-smartcol-align',thisValue);
+      });
+    });
+  })();
+
+
+  /* Add each columns' wrapping if set */
+  (function() {
+    $(target).find('thead th[data-smartcol-wrap]').each(function() {
+      let thisIndex = $(this).index();
+      $(target).find('tbody tr').each(function() {
+        $(this).find('td').eq(thisIndex).attr('data-smartcol-wrap','');
+      });
+    });
+  })();
+
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
   function hideDataColumns(target,o,lastDataColumnNth,widthFixedColumns_sum) {
     let widthTable = $(target).outerWidth();
@@ -278,7 +301,7 @@ function smartColumns(target,options) {
     let sourceIndex = sourceTH.index();
     let sourceSize = sourceTH.attr('data-smartcol-width');
     let sourceWrap = sourceTH.attr('data-smartcol-wrap');
-    let sourceCenter = sourceTH.attr('data-smartcol-center');
+    let sourceAlign = sourceTH.attr('data-smartcol-align');
     let sourceAuto = sourceTH.hasClass('smartcol-width-auto');
     let selectTD = undefined;
     let selectTDdata = undefined;
@@ -306,11 +329,10 @@ function smartColumns(target,options) {
       }
 
       //remove and add the center alignment:
-      selectTD.removeAttr('data-smartcol-center');
-      if (typeof sourceCenter !== 'undefined' && sourceCenter !== false) {
-        selectTD.attr('data-smartcol-center','');
+      selectTD.removeAttr('data-smartcol-align');
+      if (typeof sourceAlign !== 'undefined' && sourceAlign !== false) {
+        selectTD.attr('data-smartcol-align',sourceAlign);
       }
-
 
       sourceTDdata = $(this).find('td').eq(sourceIndex).text();
 

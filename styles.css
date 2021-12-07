@@ -102,10 +102,17 @@ table caption {
   word-break: break-word;
   overflow-wrap: break-word;
 }
-.smartcol-container table [data-smartcol-center] {
+
+.smartcol-container table [data-smartcol-align="left"] {
+  text-align: left;
+}
+.smartcol-container table [data-smartcol-align="center"] {
   text-align: center;
   padding-left: 0.25em;
   padding-right: 0.25em;
+}
+.smartcol-container table [data-smartcol-align="right"] {
+  text-align: right;
 }
 
 .smartcol-container table th[data-smartcol-width="narrow"] {
@@ -122,10 +129,6 @@ table caption {
 
 .smartcol-container table th[data-smartcol-width].smartcol-width-auto {
   width: auto;
-}
-
-.smartcol-container th[data-smartcol-actions] {
-  text-align: center;
 }
 
 .smartcol-container span[data-smartcol-actions-wrap] {

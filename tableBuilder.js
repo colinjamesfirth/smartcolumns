@@ -17,11 +17,11 @@
         if (th[2] == true) {
           isWrap = ' data-smartcol-wrap';
         }
-        var isCenter = '';
-        if (th[3] == true) {
-          isWrap = ' data-smartcol-center';
+        var isAlign = '';
+        if (th[3] != false) {
+          isAlign = ' data-smartcol-align="' + th[3]+ '"';
         }
-        output += '<th data-smartcol data-smartcol-width="' + th[1] + '"' + isWrap + isCenter + '>' + th[0] + '</th>\n';
+        output += '<th data-smartcol data-smartcol-width="' + th[1] + '"' + isWrap + isAlign + '>' + th[0] + '</th>\n';
         col_counter ++;
       });
       output += '</tr>\n</thead>\n';
@@ -38,6 +38,7 @@
         col1_data = r[0];
         var col_counter = 0;
         r.forEach( function(td) {
+          /*
           var isWrap = '';
           if (table_columns[col_counter][2] == true) {
             isWrap = ' data-smartcol-wrap';
@@ -46,7 +47,8 @@
           if (table_columns[col_counter][3] == true) {
             isWrap = ' data-smartcol-center';
           }
-          output += '<td' + isWrap + isCenter + '>' + td + '</td>\n';
+          */
+          output += '<td>' + td + '</td>\n';
           col_counter ++;
         });
         output += '</tr>'

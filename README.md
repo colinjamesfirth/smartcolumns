@@ -102,7 +102,7 @@ Add this attribute to the `th` element to the table header for all data columns.
 
 Any columns which are not `data-smartcol` columns can have their width fixed based on the width of the content in the column's first tbody row. For example, if you have an actions column on the far right of your table, or a column of checkboxes for selecting multiple rows, use `data-smartcol-fixed` on the header cell to stop the column width changing with different browser widths. Note that any fixed columns will always show, so limit their use to avoid overcrowding on narrow windows.
 
-### data-smartcol-width="{keyword}"
+### data-smartcol-width="{string}"
 - Type: optional
 - Element: `table > thead > th`
 - Values: narrow|normal|wide|stretch
@@ -110,11 +110,13 @@ Any columns which are not `data-smartcol` columns can have their width fixed bas
 
 Choose a base reference width keyword for each data column. Available space is normally distributed proportionally to the various width columns. If one or more columns are set to `stretch`, other columns take their base widths and available space is distributed evenly amongst the `stretch` columns. Actual widths are set during SmartColumns initialisation.
 
-### data-smartcol-center
+### data-smartcol-align="{string}"
 - Type: optional
 - Element: `table > thead > th`
+- Values: left|center|right
+- Default left
 
-Makes the whole column align center;
+Set the alignment of a column. Without the attribute, the column will align left.
 
 ### data-smartcol-wrap
 - Type: optional
