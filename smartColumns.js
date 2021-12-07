@@ -2,13 +2,12 @@
 SmartColumns
 by Colin James Firth
 https://github.com/colinjamesfirth/smartcolumns
-verson 1.2
+verson 1.3
 */
 
 function smartColumns(target,options) {
   let optionDefaults = {
     freezeFirstColumn: true,
-    hasActionsColumn: true,
     maxVisibleColumns: 100,
     columnWidthNarrow_rem: 5, //rem
     columnWidthNormal_rem: 10, //rem
@@ -61,38 +60,47 @@ function smartColumns(target,options) {
 
   })();
 
+  let widthFixedColumns_sum = 0;
+  (function() {
+    $(target).find('thead th[data-smartcol-fixed]').each(function() {
 
-  var widthActionsContent = 0;
-  if (o.hasActionsColumn === true) {
-    //get the index of the actions column:
-    let actionsIndex = $(target).find('th[data-smartcol-actions]').index();
+      //get the index of the actions column:
+      let thisColumn_index = $(this).index();
 
-    //add a span around the actions in tbody, so we can add styling and measure their width (note we can't just measure the cell width, because the browser chooses how wide it is based on the rest of the table's content):
-    $(target).find('tbody tr').each(function() {
-      $(this).find('td').eq(actionsIndex).wrapInner('<span data-smartcol-actions-wrap></span>');
+      //add a span around this column's content in tbody, so we can measure their width (note we can't just measure the cell width, because the browser naturally varies how wide the cell is based on the rest of the table's content):
+      $(target).find('tbody tr').each(function() {
+        $(this).find('td').eq(thisColumn_index).wrapInner('<span data-smartcol-actions-wrap></span>');
+      });
+
+      //measure the width, calculate the fixed width and apply it:
+      let thisColumn_width = $(target).find('tbody tr:first-child td').eq(thisColumn_index).find('span[data-smartcol-actions-wrap]').width();
+      thisColumn_width = thisColumn_width + ((o.cellXPadding_rem * o.baseFontSize_px) * 2);
+      $(this).attr('data-smartcol-fixed',thisColumn_width);
+
+      //add this width to the sum of all fixed columns for use later:
+      widthFixedColumns_sum += thisColumn_width;
     });
 
-    //measure the width, calculate the fixed width and apply it:
-    widthActionsContent = $(target).find('tbody tr:first-child span[data-smartcol-actions-wrap]').width();
-    widthActionsContent = widthActionsContent + ((o.cellXPadding_rem * o.baseFontSize_px) * 2);
+  })();
 
-    function updateActionsColumnWidth() {
-      let widthContainer = $(target).closest('.smartcol-container').outerWidth();
+  function updateFixedColumnWidths(target,o) {
+    let widthContainer = $(target).closest('.smartcol-container').outerWidth();
 
+    $(target).find('thead th[data-smartcol-fixed]').each(function() {
+      let thisIndex = $(this).index();
+      let thisWidth_px = $(this).attr('data-smartcol-fixed');
       //dynamically change the width of the actions column as the window changes width.
-      let widthActionsColumn = ((100 / widthContainer) * widthActionsContent) + '%';
-      $(target).find('th[data-smartcol-actions]').css('width',widthActionsColumn);
-    }
-    updateActionsColumnWidth();
-    $(window).resize( function() {
-      updateActionsColumnWidth();
-    });
-
+      let thisWidth_percent = ((100 / widthContainer) * thisWidth_px) + '%';
+      $(this).css('width',thisWidth_percent);
+      });
   }
-
+  updateFixedColumnWidths(target,o);
+  $(window).resize( function() {
+    updateFixedColumnWidths(target,o);
+  });
 
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
-  function hideDataColumns(target,o,lastDataColumnNth,widthActionsContent) {
+  function hideDataColumns(target,o,lastDataColumnNth,widthFixedColumns_sum) {
     let widthTable = $(target).outerWidth();
     let widthContainer = $(target).closest('.smartcol-container').width();
     let firstHideableColumnNth = 1;
@@ -131,7 +139,7 @@ function smartColumns(target,options) {
     }
     let widthReservedForSelectColumn = widestColumn;
 
-    let widthFixedColumns = widthFirstColumn + widthReservedForSelectColumn + widthActionsContent;
+    let widthFixedColumns = widthFirstColumn + widthReservedForSelectColumn + widthFixedColumns_sum;
     let widthAvailable = widthContainer - widthFixedColumns;
 
     o.widthTable = widthTable;
@@ -145,6 +153,8 @@ function smartColumns(target,options) {
     $(target).find('thead th[data-smartcol]').each( function() {
       let columnSize = $(this).attr('data-smartcol-width');
       let cellWidth = 0;
+      let thisIndex = $(this).index();
+
       if (columnSize == 'stretch') {
         cellWidth = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
       }
@@ -167,7 +177,7 @@ function smartColumns(target,options) {
       if ((counter === 0) && (o.freezeFirstColumn === true)) {
         $(this).show();
         $(target).find('tbody tr').each( function() {
-          $(this).find('td').eq(counter).show();
+          $(this).find('td').eq(thisIndex).show();
         })
         sum_visible += cellWidth;
       }
@@ -176,7 +186,7 @@ function smartColumns(target,options) {
       else if ( counter_visible >= o.maxVisibleColumns) {
         $(this).hide();
         $(target).find('tbody tr').each( function() {
-          $(this).find('td').eq(counter).hide();
+          $(this).find('td').eq(thisIndex).hide();
         })
       }
 
@@ -184,14 +194,14 @@ function smartColumns(target,options) {
       else if (sum > widthAvailable) {
         $(this).hide();
         $(target).find('tbody tr').each( function() {
-          $(this).find('td').eq(counter).hide();
+          $(this).find('td').eq(thisIndex).hide();
         })
 
       //else if this is the last last data column, hide it regardless of anything else because we always replace the last column with the selectable column:
       } else if ( $(this).is(':nth-child(' + (lastDataColumnNth) +')') ) {
         $(this).hide();
         $(target).find('tbody tr').each( function() {
-          $(this).find('td').eq(counter).hide();
+          $(this).find('td').eq(thisIndex).hide();
         })
       }
 
@@ -199,7 +209,7 @@ function smartColumns(target,options) {
       else {
         $(this).show();
         $(target).find('tbody tr').each( function() {
-          $(this).find('td').eq(counter).show();
+          $(this).find('td').eq(thisIndex).show();
         })
         sum_visible += cellWidth;
       }
@@ -216,9 +226,9 @@ function smartColumns(target,options) {
 
     });
   }
-  hideDataColumns(target,o,lastDataColumnNth,widthActionsContent);
+  hideDataColumns(target,o,lastDataColumnNth,widthFixedColumns_sum);
   $(window).resize( function() {
-    hideDataColumns(target,o,lastDataColumnNth,widthActionsContent);
+    hideDataColumns(target,o,lastDataColumnNth,widthFixedColumns_sum);
   });
 
 
@@ -264,7 +274,8 @@ function smartColumns(target,options) {
 
     let selectTH = $(target).find('th[data-smartcol-selectable]');
     let sourceTH = $(target).find('th[data-smartcol="' + data_column + '"]');
-    let sourceIndex = sourceTH.attr('data-smartcol');
+    let sourceRef = sourceTH.attr('data-smartcol');
+    let sourceIndex = sourceTH.index();
     let sourceSize = sourceTH.attr('data-smartcol-width');
     let sourceWrap = sourceTH.attr('data-smartcol-wrap');
     let sourceCenter = sourceTH.attr('data-smartcol-center');
@@ -279,7 +290,7 @@ function smartColumns(target,options) {
 
     //change the select menu's selected option to the chosen one:
     $(selectTH).find('select option').removeAttr('selected'); //remove existing selected first
-    $(selectTH).find('select option[value="' + sourceIndex + '"]').attr('selected', 'selected');
+    $(selectTH).find('select option[value="' + sourceRef + '"]').attr('selected', 'selected');
 
     //change the select column's size keyword to the correct value for the selected data column:
     $(selectTH).attr('data-smartcol-width',sourceSize);
@@ -300,7 +311,9 @@ function smartColumns(target,options) {
         selectTD.attr('data-smartcol-center','');
       }
 
+
       sourceTDdata = $(this).find('td').eq(sourceIndex).text();
+
       selectTD.text(sourceTDdata);
 
       stretchColumns(target,o);

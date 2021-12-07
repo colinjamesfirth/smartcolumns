@@ -1,8 +1,8 @@
 # SmartColumns
 
 - Created by: Colin James Firth
-- Version: 1.2
-- Date: 6 December 2021
+- Version: 1.3
+- Date: 7 December 2021
 - Repo: https://github.com/colinjamesfirth/responsive-table
 
 
@@ -46,11 +46,6 @@ You can change default variables for various options during initialisation:
 - Default: true
 
 The first data column is always visible. When the screen narrows, the first column from the left that can be hidden or converted to the selectable column is the second data column.
-
-### hasActionsColumn
-- Default: true
-
-If your table has an actions column (a column of buttons or links to perform actions on each row), and the column is the far right column, set this to true and add the attribute `data-smartcol-actions` to the column header.
 
 ### maxVisibleColumns
 - Default: 100
@@ -101,11 +96,11 @@ Various additional properties can be added to the target table. Some are mandato
 
 Add this attribute to the `th` element to the table header for all data columns. All `data-smartcol` columns will be included in the selectable column's menu.
 
-### data-smartcol-actions
-- Type: mandatory if `hasActionsColumn` is set to `true`
-- Element: The `table > thead > th` for the actions column, which should be the last column
+### data-smartcol-fixed
+- Type: optional
+- Element: The `table > thead > th` for any fixed-width columns
 
-If you have an actions column, you must nominate the column using this attribute.
+Any columns which are not `data-smartcol` columns can have their width fixed based on the width of the content in the column's first tbody row. For example, if you have an actions column on the far right of your table, or a column of checkboxes for selecting multiple rows, use `data-smartcol-fixed` on the header cell to stop the column width changing with different browser widths. Note that any fixed columns will always show, so limit their use to avoid overcrowding on narrow windows.
 
 ### data-smartcol-width="{keyword}"
 - Type: optional

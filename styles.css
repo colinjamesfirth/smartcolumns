@@ -161,4 +161,7 @@ table caption {
   color: white;
 }
 
-
+.smartcol-container .smartcol-overflow-none {
+  overflow: hidden;
+  text-overflow: clip;
+}

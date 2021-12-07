@@ -60,7 +60,7 @@
     /* Sets the width of the column based on how wide the contents are, giving it a width appropriate to the number of buttons being shown for this particular table */
     if (o.makeActionsColumn == true) {
       (function() {
-        $(target).find('thead tr').append('<th data-smartcol-actions aria-label="Actions"></th>\n');
+        $(target).find('thead tr').append('<th data-smartcol-fixed aria-label="Actions"></th>\n');
         $(target).find('tbody tr').each( function() {
           var col1_data = $(this).find('td:first-child').text();
           var output = '<td class="actions">';
