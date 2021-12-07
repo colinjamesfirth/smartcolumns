@@ -13,9 +13,9 @@ function smartColumns(target,options) {
     columnWidthNormal_rem: 10, //rem
     columnWidthWide_rem: 15, //rem
     baseFontSize_px: parseFloat(getComputedStyle(document.documentElement).fontSize),
-    widthTable: 0,
-    widthContainer: 0,
-    widthAvailable: 0
+    store_widthTable: 0,
+    store_widthContainer: 0,
+    store_widthAvailable: 0
   }
   o = { ...optionDefaults, ...(options || {}) };
 
@@ -141,6 +141,12 @@ function smartColumns(target,options) {
     });
   })();
 
+  /* convert rem units to pixel equivalents */
+  function rem2px(rem) {
+    let px = (o.columnWidthWide_rem * o.baseFontSize_px);
+    return px;
+  }
+
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
   function hideDataColumns(target,o,lastDataColumnNth,widthFixedColumns_sum) {
     let widthTable = $(target).outerWidth();
@@ -153,40 +159,40 @@ function smartColumns(target,options) {
       firstHideableColumnNth = 2;
       let firstColumnSizeKeyword = $(target).find('thead th[data-column]').first().attr('data-smartcol-width');
       if (firstColumnSizeKeyword == 'stretch') {
-        widthFirstColumn = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
+        widthFirstColumn = rem2px(o.columnWidthWide_rem) + 1;
       }
       else if (firstColumnSizeKeyword == 'narrow') {
-        widthFirstColumn = (o.columnWidthNarrow_rem * o.baseFontSize_px) + 1;
+        widthFirstColumn = rem2px(o.columnWidthNarrow_rem) + 1;
       }
       else if (firstColumnSizeKeyword == 'normal') {
-        widthFirstColumn = (o.columnWidthNormal_rem * o.baseFontSize_px) + 1;
+        widthFirstColumn = rem2px(o.columnWidthNormal_rem) + 1;
       }
       else if (firstColumnSizeKeyword == 'wide') {
-        widthFirstColumn = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
+        widthFirstColumn = rem2px(o.columnWidthWide_rem) + 1;
       }
     }
 
     let widestColumn = null;
     if ( $(target).find('thead th[data-smartcol-width="stretch"]').length ) {
-      widestColumn = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
+      widestColumn = rem2px(o.columnWidthWide_rem) + 1;
     }
     else if ( $(target).find('thead th[data-smartcol-width="wide"]').length ) {
-      widestColumn = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
+      widestColumn = rem2px(o.columnWidthWide_rem) + 1;
     }
     else if ( $(target).find('thead th[data-smartcol-width="normal"]').length ) {
-      widestColumn = (o.columnWidthNormal_rem * o.baseFontSize_px) + 1;
+      widestColumn = rem2px(o.columnWidthNormal_rem) + 1;
     }
     else if ( $(target).find('thead th[data-smartcol-width="narrow"]').length ) {
-      widestColumn = (o.columnWidthNarrow_rem * o.baseFontSize_px) + 1;
+      widestColumn = rem2px(o.columnWidthNarrow_rem) + 1;
     }
     let widthReservedForSelectColumn = widestColumn;
 
     let widthFixedColumns = widthFirstColumn + widthReservedForSelectColumn + widthFixedColumns_sum;
     let widthAvailable = widthContainer - widthFixedColumns;
 
-    o.widthTable = widthTable;
-    o.widthContainer = widthContainer;
-    o.widthAvailable = widthAvailable;
+    o.store_widthTable = widthTable;
+    o.store_widthContainer = widthContainer;
+    o.store_widthAvailable = widthAvailable;
 
     let counter = 0;
     let sum = 0;
@@ -198,16 +204,16 @@ function smartColumns(target,options) {
       let thisIndex = $(this).index();
 
       if (columnSize == 'stretch') {
-        cellWidth = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
+        cellWidth = rem2px(o.columnWidthWide_rem) + 1;
       }
       else if (columnSize == 'narrow') {
-        cellWidth = (o.columnWidthNarrow_rem * o.baseFontSize_px) + 1;
+        cellWidth = rem2px(o.columnWidthNarrow_rem) + 1;
       }
       else if (columnSize == 'normal') {
-        cellWidth = (o.columnWidthNormal_rem * o.baseFontSize_px) + 1;
+        cellWidth = rem2px(o.columnWidthNormal_rem) + 1;
       }
       else if (columnSize == 'wide') {
-        cellWidth = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
+        cellWidth = rem2px(o.columnWidthWide_rem) + 1;
       }
 
       //add this columns reference cell width to the sum of columns evaluated so far"
@@ -290,7 +296,7 @@ function smartColumns(target,options) {
 
 
   function stretchColumns(target,o) {
-    let stretchBaseWidth = (o.columnWidthWide_rem * o.baseFontSize_px) + 1;
+    let stretchBaseWidth = rem2px(o.columnWidthWide_rem) + 1;
     let counter = 0;
     let sum = 0;
 
