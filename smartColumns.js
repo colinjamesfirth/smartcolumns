@@ -12,7 +12,6 @@ function smartColumns(target,options) {
     columnWidthNarrow_rem: 5, //rem
     columnWidthNormal_rem: 10, //rem
     columnWidthWide_rem: 15, //rem
-    cellXPadding_rem: 0.75, //rem
     baseFontSize_px: parseFloat(getComputedStyle(document.documentElement).fontSize),
     widthTable: 0,
     widthContainer: 0,
@@ -90,9 +89,11 @@ function smartColumns(target,options) {
         $(this).find('td').eq(thisColumn_index).wrapInner('<span data-smartcol-actions-wrap></span>');
       });
 
-      //measure the width, calculate the fixed width and apply it:
-      let thisColumn_width = $(target).find('tbody tr:first-child td').eq(thisColumn_index).find('span[data-smartcol-actions-wrap]').width();
-      thisColumn_width = thisColumn_width + ((o.cellXPadding_rem * o.baseFontSize_px) * 2);
+      //measure the padding and width, calculate the fixed width and apply it:
+      let thisColumnContent_width = parseFloat( $(target).find('tbody tr:first-child td').eq(thisColumn_index).find('span[data-smartcol-actions-wrap]').width() );
+      let thisColumnPaddingLeft_width = parseFloat( $(target).find('tbody tr:first-child td').eq(thisColumn_index).css('padding-left') );
+      let thisColumnPaddingRight_width = parseFloat( $(target).find('tbody tr:first-child td').eq(thisColumn_index).css('padding-right') );
+      let thisColumn_width = thisColumnContent_width + thisColumnPaddingLeft_width + thisColumnPaddingRight_width;
       $(this).attr('data-smartcol-fixed',thisColumn_width);
 
       //add this width to the sum of all fixed columns for use later:

@@ -37,7 +37,6 @@ You can change default variables for various options during initialisation:
     columnWidthNarrow_rem: 5,
     columnWidthNormal_rem: 10,
     columnWidthWide_rem: 15,
-    cellXPadding_rem: 0.75,
     baseFontSize_px: {auto based on the document's base font size}
   });
 </pre>
@@ -71,12 +70,6 @@ Sets the base reference width of a normal column, excluding padding. To make a c
 Sets the base reference width of a wide column, excluding padding. To make a column a narrow column, add the attribute `data-smartcol-width="wide"` to the column header.
 
 If a column is set to stretch with `data-smartcol-width="stretch"`, the same reference width as a wide column will be used when calculating available space.
-
-### cellXPadding_rem
-- Default 0.75
-- Units: rem
-
-Sets the x-axis (left and right) padding for the actions column. This is used to help calculate the fixed width of the actions column and should match the left and right padding used in the css.
 
 ### baseFontSize_px
 - Default: the document's base font size
