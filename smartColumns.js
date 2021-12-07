@@ -32,6 +32,8 @@ function smartColumns(target,options) {
     //create the select menu:
     let selectMenu = '<select aria-label="Choose the data for this column">\n';
     let counter = 0;
+
+    selectMenu += '<option value="auto" >Auto &check;</option>';
     $(target).find('thead th[data-smartcol]').each(function() {
       $(this).attr('data-smartcol',counter);
       let t = $(this).text();
@@ -43,6 +45,8 @@ function smartColumns(target,options) {
     //add the new th in the thead for the selctable column:
     $(target).find('thead tr th:nth-child(' + lastDataColumnNth + ')').after('<th data-smartcol-selectable data-smartcol-auto>' + selectMenu + '</th>\n');
 
+    $(target).find('th[data-smartcol-selectable] select option[value="auto"]').after('<hr />');
+
     //add a new td in every tbody row for the selctable column:
     $(target).find('tbody tr td:nth-child(' + lastDataColumnNth + ')').each( function() {
       $(this).after('<td></td>\n');
@@ -50,11 +54,25 @@ function smartColumns(target,options) {
 
     /* Add a change event to the select menu to check for user input */
     $(target).on('change','th[data-smartcol-selectable] select',function() {
-      //remove the data-smartcol-auto attribute, because we want this column to be fixed now:
-      $(this).closest('th[data-smartcol-selectable]').removeAttr('data-smartcol-auto');
+
+      let data_column = $(this).val();
+
+      if (data_column == 'auto') {
+        //add the data-smartcol-auto attribute, because we want this column to be auto now:
+        $(this).closest('th[data-smartcol-selectable]').attr('data-smartcol-auto','');
+        //get the value of the column we need to auto select:
+        data_column = $(target).find('th[data-smartcol]:hidden').first().attr('data-smartcol');
+        //check the Auto option:
+        $(this).find('option[value="auto"]').html('Auto &check;');
+      }
+      else {
+        //remove the data-smartcol-auto attribute, because we want this column to be fixed now:
+        $(this).closest('th[data-smartcol-selectable]').removeAttr('data-smartcol-auto');
+        //uncheck the auto option:
+        $(this).find('option[value="auto"]').text('Auto');
+      }
 
       //set the column data based on the selection:
-      let data_column = $(this).val();
       selectableColumn_set(target,data_column);
     });
 
@@ -314,6 +332,7 @@ function smartColumns(target,options) {
     //change the select menu's selected option to the chosen one:
     $(selectTH).find('select option').removeAttr('selected'); //remove existing selected first
     $(selectTH).find('select option[value="' + sourceRef + '"]').attr('selected', 'selected');
+    $(selectTH).find('select option[value="' + sourceRef + '"]').prop('selected', true)
 
     //change the select column's size keyword to the correct value for the selected data column:
     $(selectTH).attr('data-smartcol-width',sourceSize);
