@@ -21,7 +21,7 @@
         if (th[3] != false) {
           isAlign = ' data-smartcol-align="' + th[3]+ '"';
         }
-        output += '<th data-smartcol data-smartcol-width="' + th[1] + '"' + isWrap + isAlign + '>' + th[0] + '</th>\n';
+        output += '<th data-smartcol data-smartcol-size="' + th[1] + '"' + isWrap + isAlign + '>' + th[0] + '</th>\n';
         col_counter ++;
       });
       output += '</tr>\n</thead>\n';

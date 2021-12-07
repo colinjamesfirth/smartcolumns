@@ -119,8 +119,8 @@ function smartColumns(target,options) {
 
   /* If any data columns don't have a width setting, give them one – making them all 'normal' */
   (function() {
-    $(target).find('thead th[data-smartcol]:not([data-smartcol-width])').each(function() {
-      $(this).attr('data-smartcol-width','normal');
+    $(target).find('thead th[data-smartcol]:not([data-smartcol-size])').each(function() {
+      $(this).attr('data-smartcol-size','normal');
     });
   })();
 
@@ -161,7 +161,7 @@ function smartColumns(target,options) {
 
     if (o.freezeFirstColumn === true) {
       firstHideableColumnNth = 2;
-      let firstColumnSizeKeyword = $(target).find('thead th[data-column]').first().attr('data-smartcol-width');
+      let firstColumnSizeKeyword = $(target).find('thead th[data-column]').first().attr('data-smartcol-size');
       if (firstColumnSizeKeyword == 'stretch') {
         widthFirstColumn = rem2px(o.columnWidthWide_rem) + 1;
       }
@@ -177,16 +177,16 @@ function smartColumns(target,options) {
     }
 
     let widestColumn = null;
-    if ( $(target).find('thead th[data-smartcol-width="stretch"]').length ) {
+    if ( $(target).find('thead th[data-smartcol-size="stretch"]').length ) {
       widestColumn = rem2px(o.columnWidthWide_rem) + 1;
     }
-    else if ( $(target).find('thead th[data-smartcol-width="wide"]').length ) {
+    else if ( $(target).find('thead th[data-smartcol-size="wide"]').length ) {
       widestColumn = rem2px(o.columnWidthWide_rem) + 1;
     }
-    else if ( $(target).find('thead th[data-smartcol-width="normal"]').length ) {
+    else if ( $(target).find('thead th[data-smartcol-size="normal"]').length ) {
       widestColumn = rem2px(o.columnWidthNormal_rem) + 1;
     }
-    else if ( $(target).find('thead th[data-smartcol-width="narrow"]').length ) {
+    else if ( $(target).find('thead th[data-smartcol-size="narrow"]').length ) {
       widestColumn = rem2px(o.columnWidthNarrow_rem) + 1;
     }
     let widthReservedForSelectColumn = widestColumn;
@@ -203,7 +203,7 @@ function smartColumns(target,options) {
     let sum_visible = 0;
 
     $(target).find('thead th[data-smartcol]').each( function() {
-      let columnSize = $(this).attr('data-smartcol-width');
+      let columnSize = $(this).attr('data-smartcol-size');
       let cellWidth = 0;
       let thisIndex = $(this).index();
 
@@ -223,7 +223,7 @@ function smartColumns(target,options) {
       //add this columns reference cell width to the sum of columns evaluated so far"
       sum += cellWidth;
 
-      $(target).find('th[data-smartcol-width]').removeClass('smartcol-width-auto');
+      $(target).find('th[data-smartcol-size]').removeClass('smartcol-width-auto');
 
       //if this is the first column, and we've chosen to freeze it, then show it regardless of anything else:
       if ((counter === 0) && (o.freezeFirstColumn === true)) {
@@ -270,9 +270,9 @@ function smartColumns(target,options) {
       counter_visible ++;
 
       if (widthAvailable < sum_visible) {
-        $(target).find('th[data-smartcol-width]').addClass('smartcol-width-auto');
+        $(target).find('th[data-smartcol-size]').addClass('smartcol-width-auto');
       } else {
-        $(target).find('th[data-smartcol-width]').removeClass('smartcol-width-auto');
+        $(target).find('th[data-smartcol-size]').removeClass('smartcol-width-auto');
         stretchColumns(target,o);
       }
 
@@ -304,7 +304,7 @@ function smartColumns(target,options) {
     let counter = 0;
     let sum = 0;
 
-    $(target).find('thead th[data-smartcol-width="stretch"]').each(function() {
+    $(target).find('thead th[data-smartcol-size="stretch"]').each(function() {
       if ( $(this).is(':visible') ) {
         sum += $(this).width();
         counter ++;
@@ -313,7 +313,7 @@ function smartColumns(target,options) {
     widthStretch = sum / counter;
 
     if (widthStretch >= stretchBaseWidth) {
-      $(target).find('thead th[data-smartcol-width="stretch"]').addClass('smartcol-width-auto');
+      $(target).find('thead th[data-smartcol-size="stretch"]').addClass('smartcol-width-auto');
     }
   }
 
@@ -328,7 +328,7 @@ function smartColumns(target,options) {
     let sourceTH = $(target).find('th[data-smartcol="' + data_column + '"]');
     let sourceRef = sourceTH.attr('data-smartcol');
     let sourceIndex = sourceTH.index();
-    let sourceSize = sourceTH.attr('data-smartcol-width');
+    let sourceSize = sourceTH.attr('data-smartcol-size');
     let sourceWrap = sourceTH.attr('data-smartcol-wrap');
     let sourceAlign = sourceTH.attr('data-smartcol-align');
     let sourceAuto = sourceTH.hasClass('smartcol-width-auto');
@@ -346,7 +346,7 @@ function smartColumns(target,options) {
     $(selectTH).find('select option[value="' + sourceRef + '"]').prop('selected', true)
 
     //change the select column's size keyword to the correct value for the selected data column:
-    $(selectTH).attr('data-smartcol-width',sourceSize);
+    $(selectTH).attr('data-smartcol-size',sourceSize);
 
     //add styling attributes to the body table cells in the selectable column
     $(target).find('tbody tr').each(function() {

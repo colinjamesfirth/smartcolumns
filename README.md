@@ -55,21 +55,21 @@ Set the maximum number of data columns that can be shown, regardless of how wide
 - Default: 5
 - Unit: rem
 
-Sets the base reference width of a narrow column, excluding padding. To make a column a narrow column, add the attribute `data-smartcol-width="narrow"` to the column header.
+Sets the base reference width of a narrow column, excluding padding. To make a column a narrow column, add the attribute `data-smartcol-size="narrow"` to the column header.
 
 ### columnWidthNormal_rem
 - Default: 10
 - Unit: rem
 
-Sets the base reference width of a normal column, excluding padding. To make a column a narrow column, add the attribute `data-smartcol-width="normal"` to the column header.
+Sets the base reference width of a normal column, excluding padding. To make a column a narrow column, add the attribute `data-smartcol-size="normal"` to the column header.
 
 ### columnWidthWide_rem
 - Default: 15
 - Unit: rem
 
-Sets the base reference width of a wide column, excluding padding. To make a column a narrow column, add the attribute `data-smartcol-width="wide"` to the column header.
+Sets the base reference width of a wide column, excluding padding. To make a column a narrow column, add the attribute `data-smartcol-size="wide"` to the column header.
 
-If a column is set to stretch with `data-smartcol-width="stretch"`, the same reference width as a wide column will be used when calculating available space.
+If a column is set to stretch with `data-smartcol-size="stretch"`, the same reference width as a wide column will be used when calculating available space.
 
 ### baseFontSize_px
 - Default: the document's base font size
@@ -95,7 +95,7 @@ Add this attribute to the `th` element to the table header for all data columns.
 
 Any columns which are not `data-smartcol` columns can have their width fixed based on the width of the content in the column's first tbody row. For example, if you have an actions column on the far right of your table, or a column of checkboxes for selecting multiple rows, use `data-smartcol-fixed` on the header cell to stop the column width changing with different browser widths. Note that any fixed columns will always show, so limit their use to avoid overcrowding on narrow windows.
 
-### data-smartcol-width="{string}"
+### data-smartcol-size="{string}"
 - Type: optional
 - Element: `table > thead > th`
 - Values: narrow|normal|wide|stretch
