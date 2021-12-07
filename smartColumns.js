@@ -118,7 +118,6 @@ function smartColumns(target,options) {
     updateFixedColumnWidths(target,o);
   });
 
-
   /* Add each columns' content alignment if set */
   (function() {
     $(target).find('thead th[data-smartcol-align]').each(function() {
@@ -129,7 +128,6 @@ function smartColumns(target,options) {
       });
     });
   })();
-
 
   /* Add each columns' wrapping if set */
   (function() {
