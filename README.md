@@ -85,19 +85,19 @@ Various additional properties can be added to the target table. Some are mandato
 
 ### data-smartcol
 - Type: mandatory
-- Element: `table > thead > th`
+- Apply to: `table > thead > th`
 
 Add this attribute to the `th` element to the table header for all data columns. All `data-smartcol` columns will be included in the selectable column's menu.
 
 ### data-smartcol-fixed
 - Type: optional
-- Element: The `table > thead > th` for any fixed-width columns
+- Apply to: The `table > thead > th` for any fixed-width columns
 
 Any columns which are not `data-smartcol` columns can have their width fixed based on the width of the content in the column's first tbody row. For example, if you have an actions column on the far right of your table, or a column of checkboxes for selecting multiple rows, use `data-smartcol-fixed` on the header cell to stop the column width changing with different browser widths. Note that any fixed columns will always show, so limit their use to avoid overcrowding on narrow windows.
 
 ### data-smartcol-size="{string}"
 - Type: optional
-- Element: `table > thead > th`
+- Apply to: `table > thead > th`
 - Values: narrow|normal|wide|stretch
 - Default: normal
 
@@ -105,17 +105,23 @@ Choose a base reference width keyword for each data column. Available space is n
 
 ### data-smartcol-align="{string}"
 - Type: optional
-- Element: `table > thead > th`
+- Apply to: `table > thead > th`
 - Values: left|center|right
-- Default left
+- Default: left
 
 Set the alignment of a column. Without the attribute, the column will align left.
 
-### data-smartcol-wrap
+### data-smartcol-overflow="{string}"
 - Type: optional
-- Element: `table > thead > th`
+- Apply to: `table > thead > th`
+- values: normal|ellipsis|fade|wrap
+- Default: normal
 
-Makes the column's data rows wrap long content. Long words (such as email addresses may line break to fit).
+Choose how to deal with overflowed content.
+
+- normal or ellipsis: Keeps the content on a single line and uses and ellipsis to indicate there is overflowed content
+- fade: Keeps the content on a single line and fades out the right side of the box to indicate there is overflowed content
+- wrap: Makes the column's data rows wrap long content. Long words (such as email addresses may line break to fit).
 
 
 ## Behaviours
@@ -123,7 +129,7 @@ Makes the column's data rows wrap long content. Long words (such as email addres
 - If the user hasn't yet manually selected data for the selectable column, the selectable column automatically takes the data from the first hidden column. The column's content therefore changes as columns hide/show when the window resizes
 - If the user has manually selected data for the selectable column, then the column retains that selection even if the window resizes.
 - Column widths are set in the CSS, but SmartColumns's column hiding function needs to know those preferred widths to do its calculations
-- The actions column has an inline width using a percentage value, set in SmartColumns using javascript based on the width of its content. This is because every row in the table has the same content in that column, but each table might have a different set of actions, so we don't know the width until run time. We can't just tell it to be auto width because the browser will  make that column as wide as it can and shrink all the data columns.
-- If a column is set to wrap, SmartColumns only applies the wrap to the appropriate tbody cell (not on the header; we don't normally want headers to wrap)
-- If a column is to to align centre, SmartColumns applies the centring style to the appropriate head th AND body td's (both need to be centre).
+- Fixied columns have an inline width using a percentage value, set in SmartColumns using javascript based on the width of its content. This is because every row in the table has the same content in that column, but each table might have a different amount of content, so we don't know the width until run time. We can't just tell it to be auto width because the browser will  make that column as wide as it can and shrink all the data columns.
+- If a column has an overflow setting, SmartColumns only applies overflow classes to the appropriate tbody cell (not on the header – they have text-overflow: ellipsis by default)
+- If a column has an align setting, SmartColumns applies the align classes to the appropriate head th AND body td's (both need to match), with the exception of the selectable column, which always has the header select component left aligned
 - The selectable column's width changes depending on the width setting of the source column. To ensure the column hiding doesn't change abruptly when different width data is selected, SmartColumns reserves enough width for the select column to accommodate the widest possible column in this table So, if all columns are set to `narrow`, the select column will reserve space for 'narrow' columns; but if there's one `wide` column, a wide space will be reserved.
