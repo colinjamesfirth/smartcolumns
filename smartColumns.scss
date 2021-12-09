@@ -40,19 +40,12 @@
       position: absolute;
       inset: 0 0 0 0;
       width: 100%;
-      padding-bottom: 0.25rem;
       border: none;
-      border-top: 0.25rem solid grey;
       border-radius: 0;
       outline: 0;
       background: transparent;
       font-weight: inherit;
-      &:hover,
-      &:focus {
-        background: #666666;
-        border-color: #666666;
-        color: white;
-      }
+      font-size: inherit;
     }
   }
 

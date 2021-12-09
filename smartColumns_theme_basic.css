@@ -10,8 +10,8 @@ body {
   font-size: inherit;
 }
 
-button,
-select {
+.smartcol-container button,
+.smartcol-container select {
   display: inline-flex;
   cursor: pointer;
   min-height: 2.5em;
@@ -27,51 +27,62 @@ select {
   border-radius: 0.3em;
 }
 
-button:hover,
-button:focus {
+.smartcol-container button:hover,
+.smartcol-container button:focus {
   background: #666666;
   color: white;
   outline: 0;
   border: 1px solid #333;
 }
 
-
-table {
+.smartcol-container table {
   border: 1px solid grey;
   font-size: 1rem;
   text-align: left;
   margin-bottom: 2rem;
 }
-table th {
+.smartcol-container table th {
   background: #e5e5e5;
 }
-table th,
-table td {
+.smartcol-container table th,
+.smartcol-container table td {
   padding: 1rem 0.75rem;
   border-bottom: 1px solid grey;
 }
 
-table th:not(:first-child),
-table td:not(:first-child) {
+.smartcol-container table th:not(:first-child),
+.smartcol-container table td:not(:first-child) {
   border-left: 1px solid grey;
 }
 
 /* additional styles for if we have the clickable rows (an early feature that was moved out of smartColumn for being out of scope) */
-table tr[data-row-clickable] {
+.smartcol-container table tr[data-row-clickable] {
   cursor: pointer;
 }
-table tr[data-row-clickable]:hover {
+.smartcol-container table tr[data-row-clickable]:hover {
   background: #e5e5e5;
 }
 
-table caption {
+.smartcol-container table caption {
   background: #e5e5e5;
   padding: 1rem;
   margin-bottom: 0.5rem;
 }
 
-.button-wrapper {
+.smartcol-container .button-wrapper {
   display: inline-flex;
   justify-content: space-between;
   gap: 0.5em;
+}
+
+/* selectable column */
+.smartcol-container [data-smartcol-selectable] select {
+  padding-bottom: 0.25rem;
+  border-top: 0.25rem solid grey;
+}
+.smartcol-container [data-smartcol-selectable] select:hover,
+.smartcol-container [data-smartcol-selectable] select:focus {
+  background: #666666;
+  border-color: #666666;
+  color: white;
 }
