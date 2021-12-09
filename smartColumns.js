@@ -25,7 +25,9 @@ function smartColumns(target,options) {
 
 
   /* Wrap the target table in a block level div so we can measure the width of the containing space (also used for CSS selectors) */
-  $(target).wrap('<div class="smartcol-container"></div>');
+  if ( !$(target).parent().hasClass('smartcol-container') ) {
+    $(target).wrap('<div class="smartcol-container"></div>');
+  }
 
   let lastDataColumnIndex = $(target).find('thead th[data-smartcol]').last().index();
   let lastDataColumnNth = lastDataColumnIndex + 1;
