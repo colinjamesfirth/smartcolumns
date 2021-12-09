@@ -14,8 +14,8 @@
       var output = '<thead>\n<tr>';
       table_columns.forEach( function(th) {
         var isWrap = '';
-        if (th[2] == true) {
-          isWrap = ' data-smartcol-wrap';
+        if (th[2] != false) {
+          isWrap = ' data-smartcol-overflow="' + th[2]+ '"';
         }
         var isAlign = '';
         if (th[3] != false) {

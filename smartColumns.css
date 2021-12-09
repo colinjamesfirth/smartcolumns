@@ -1,4 +1,12 @@
-/* SMART COLUMNS STYLES */
+/*
+SmartColumns
+by Colin James Firth
+https://github.com/colinjamesfirth/smartcolumns
+verson 1.3
+*/
+/*
+MAIN COMPONENT STYLES
+*/
 .smartcol-container {
   /* being explicit, because these are ciritical to the component working */
   display: block;
@@ -18,12 +26,7 @@
       overflow: hidden;
       text-overflow: ellipsis; }
     .smartcol-container table tbody td {
-      box-sizing: border-box;
-      word-break: normal;
-      overflow-wrap: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap; }
+      box-sizing: border-box; }
   .smartcol-container [data-smartcol-selectable] {
     position: relative; }
     .smartcol-container [data-smartcol-selectable]:after {
@@ -47,17 +50,47 @@
     width: 15rem; }
   .smartcol-container [data-smartcol-size].smartcol-width-auto {
     width: auto; }
-  .smartcol-container [data-smartcol-wrap] {
+  .smartcol-container .smartcol-data-column,
+  .smartcol-container .smartcol-overflow-normal,
+  .smartcol-container .smartcol-overflow-ellipsis {
+    word-break: normal;
+    overflow-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap; }
+  .smartcol-container .smartcol-overflow-fade {
+    position: relative;
+    word-break: normal;
+    overflow-wrap: nowrap;
+    text-overflow: clip;
+    overflow: hidden;
+    white-space: nowrap; }
+    .smartcol-container .smartcol-overflow-fade:after {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 2rem;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, white 100%);
+      pointer-events: none; }
+  .smartcol-container .smartcol-overflow-wrap {
     word-break: break-word;
     overflow-wrap: break-word;
+    text-overflow: normal;
+    overflow: hidden;
     white-space: normal; }
-  .smartcol-container [data-smartcol-align="left"] {
+  .smartcol-container [data-smartcol-align="left"],
+  .smartcol-container .smartcol-align-left {
     text-align: left; }
-  .smartcol-container [data-smartcol-align="center"] {
+  .smartcol-container [data-smartcol-align="center"],
+  .smartcol-container .smartcol-align-center {
     text-align: center;
     padding-left: 0.25em;
     padding-right: 0.25em; }
-  .smartcol-container [data-smartcol-align="right"] {
+  .smartcol-container [data-smartcol-align="right"],
+  .smartcol-container .smartcol-align-right {
     text-align: right; }
   .smartcol-container .smartcol-overflow-none {
     overflow: hidden;

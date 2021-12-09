@@ -5,6 +5,10 @@ https://github.com/colinjamesfirth/smartcolumns
 verson 1.3
 */
 
+/*
+MAIN COMPONENT SCRIPT
+*/
+
 function smartColumns(target,options) {
   let optionDefaults = {
     freezeFirstColumn: true,
@@ -48,7 +52,7 @@ function smartColumns(target,options) {
 
     //add a new td in every tbody row for the selctable column:
     $(target).find('tbody tr td:nth-child(' + lastDataColumnNth + ')').each( function() {
-      $(this).after('<td></td>\n');
+      $(this).after('<td class="smartcol-data-column"></td>\n');
     });
 
     /* Add a change event to the select menu to check for user input */
@@ -124,23 +128,43 @@ function smartColumns(target,options) {
     });
   })();
 
+
+  /* Add each columns' content alignment if set */
+  (function() {
+    $(target).find('thead th[data-smartcol]').each(function() {
+      let thisIndex = $(this).index();
+      $(target).find('tbody tr').each(function() {
+        $(this).find('td').eq(thisIndex).addClass('smartcol-data-column');
+      });
+    });
+  })();
+
   /* Add each columns' content alignment if set */
   (function() {
     $(target).find('thead th[data-smartcol-align]').each(function() {
       let thisIndex = $(this).index();
       let thisValue = $(this).attr('data-smartcol-align');
+      let thisSetting = thisValue;
+
+      $(this).addClass('smartcol-align-' + thisSetting);
       $(target).find('tbody tr').each(function() {
-        $(this).find('td').eq(thisIndex).attr('data-smartcol-align',thisValue);
+        $(this).find('td').eq(thisIndex).addClass('smartcol-align-' + thisSetting);
       });
     });
   })();
 
   /* Add each columns' wrapping if set */
   (function() {
-    $(target).find('thead th[data-smartcol-wrap]').each(function() {
+    $(target).find('thead th[data-smartcol-overflow]').each(function() {
       let thisIndex = $(this).index();
+      let thisValue = $(this).attr('data-smartcol-overflow');
+
+      let thisSetting = 'normal';
+      if (typeof thisValue !== 'undefined' && thisValue !== false) {
+        thisSetting = thisValue;
+      }
       $(target).find('tbody tr').each(function() {
-        $(this).find('td').eq(thisIndex).attr('data-smartcol-wrap','');
+        $(this).find('td').eq(thisIndex).addClass('smartcol-overflow-' + thisSetting);
       });
     });
   })();
@@ -329,7 +353,7 @@ function smartColumns(target,options) {
     let sourceRef = sourceTH.attr('data-smartcol');
     let sourceIndex = sourceTH.index();
     let sourceSize = sourceTH.attr('data-smartcol-size');
-    let sourceWrap = sourceTH.attr('data-smartcol-wrap');
+    let sourceWrap = sourceTH.attr('data-smartcol-overflow');
     let sourceAlign = sourceTH.attr('data-smartcol-align');
     let sourceAuto = sourceTH.hasClass('smartcol-width-auto');
     let selectTD = undefined;
@@ -353,15 +377,15 @@ function smartColumns(target,options) {
       selectTD = $(this).find('td').eq(selectIndex);
 
       //remove and add the column-wrap:
-      selectTD.removeAttr('data-smartcol-wrap');
+      selectTD.removeClass('smartcol-overflow-normal smartcol-overflow-ellipsis smartcol-overflow-fade smartcol-overflow-wrap');
       if (typeof sourceWrap !== 'undefined' && sourceWrap !== false) {
-        selectTD.attr('data-smartcol-wrap','');
+        selectTD.addClass('smartcol-overflow-' + sourceWrap);
       }
 
       //remove and add the center alignment:
-      selectTD.removeAttr('data-smartcol-align');
+      selectTD.removeClass('smartcol-align-left smartcol-align-center smartcol-align-right');
       if (typeof sourceAlign !== 'undefined' && sourceAlign !== false) {
-        selectTD.attr('data-smartcol-align',sourceAlign);
+        selectTD.addClass('smartcol-align-' + sourceAlign);
       }
 
       sourceTDdata = $(this).find('td').eq(sourceIndex).text();
