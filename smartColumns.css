@@ -1,0 +1,71 @@
+/* SMART COLUMNS STYLES */
+.smartcol-container {
+  /* being explicit, because these are ciritical to the component working */
+  display: block;
+  width: 100%;
+  /* selectable column */
+  /* column sizes */
+  /* text wrapping */
+  /* text alignment */ }
+  .smartcol-container table {
+    box-sizing: border-box;
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%; }
+    .smartcol-container table thead th {
+      box-sizing: border-box;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+    .smartcol-container table tbody td {
+      box-sizing: border-box;
+      word-break: normal;
+      overflow-wrap: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap; }
+  .smartcol-container [data-smartcol-selectable] {
+    position: relative; }
+    .smartcol-container [data-smartcol-selectable]:after {
+      content: "\00a0"; }
+    .smartcol-container [data-smartcol-selectable] select {
+      position: absolute;
+      inset: 0 0 0 0;
+      width: 100%;
+      padding-bottom: 0.25rem;
+      border: none;
+      border-top: 0.25rem solid grey;
+      border-radius: 0;
+      outline: 0;
+      background: transparent;
+      font-weight: inherit; }
+      .smartcol-container [data-smartcol-selectable] select:hover, .smartcol-container [data-smartcol-selectable] select:focus {
+        background: #666666;
+        border-color: #666666;
+        color: white; }
+  .smartcol-container [data-smartcol-size="narrow"] {
+    width: 5rem; }
+  .smartcol-container [data-smartcol-size="normal"] {
+    width: 10rem; }
+  .smartcol-container [data-smartcol-size="wide"],
+  .smartcol-container [data-smartcol-size="stretch"] {
+    width: 15rem; }
+  .smartcol-container [data-smartcol-size].smartcol-width-auto {
+    width: auto; }
+  .smartcol-container [data-smartcol-wrap] {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal; }
+  .smartcol-container [data-smartcol-align="left"] {
+    text-align: left; }
+  .smartcol-container [data-smartcol-align="center"] {
+    text-align: center;
+    padding-left: 0.25em;
+    padding-right: 0.25em; }
+  .smartcol-container [data-smartcol-align="right"] {
+    text-align: right; }
+  .smartcol-container .smartcol-overflow-none {
+    overflow: hidden;
+    text-overflow: clip; }
+
+/*# sourceMappingURL=smartColumns.css.map */

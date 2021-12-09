@@ -1,0 +1,100 @@
+/* SMART COLUMNS STYLES */
+
+.smartcol-container {
+  /* being explicit, because these are ciritical to the component working */
+  display: block;
+  width: 100%;
+
+  table {
+    box-sizing: border-box;
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    thead {
+      th {
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    tbody {
+      td {
+        box-sizing: border-box;
+        word-break: normal;
+        overflow-wrap: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  /* selectable column */
+  [data-smartcol-selectable] {
+    position: relative;
+    &:after {
+      content: "\00a0"; //non-breaking space; forces the cell to have normal layout in cases when there aren't any other header cells with labels
+    }
+    select {
+      position: absolute;
+      inset: 0 0 0 0;
+      width: 100%;
+      padding-bottom: 0.25rem;
+      border: none;
+      border-top: 0.25rem solid grey;
+      border-radius: 0;
+      outline: 0;
+      background: transparent;
+      font-weight: inherit;
+      &:hover,
+      &:focus {
+        background: #666666;
+        border-color: #666666;
+        color: white;
+      }
+    }
+  }
+
+  /* column sizes */
+  [data-smartcol-size="narrow"] {
+    width: 5rem;
+  }
+  [data-smartcol-size="normal"] {
+    width: 10rem;
+  }
+  [data-smartcol-size="wide"],
+  [data-smartcol-size="stretch"] {
+    width: 15rem;
+  }
+  [data-smartcol-size].smartcol-width-auto {
+    width: auto;
+  }
+
+  /* text wrapping */
+  [data-smartcol-wrap] {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+
+  /* text alignment */
+  [data-smartcol-align="left"] {
+    text-align: left;
+  }
+  [data-smartcol-align="center"] {
+    text-align: center;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+  }
+  [data-smartcol-align="right"] {
+    text-align: right;
+  }
+
+
+
+  .smartcol-overflow-none {
+    overflow: hidden;
+    text-overflow: clip;
+  }
+}

@@ -1,0 +1,77 @@
+/* GENERAL STYLES */
+
+* {
+  box-sizing: border-box;
+}
+html {
+  font-size: 14px;
+}
+body {
+  font-size: inherit;
+}
+
+button,
+select {
+  display: inline-flex;
+  cursor: pointer;
+  min-height: 2.5em;
+  padding: 0 0.5rem;
+  align-items: center;
+  font-size: 1rem;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  outline: 0;
+  border: 1px solid #333;
+  background: white;
+  border-radius: 0.3em;
+}
+
+button:hover,
+button:focus {
+  background: #666666;
+  color: white;
+  outline: 0;
+  border: 1px solid #333;
+}
+
+
+table {
+  border: 1px solid grey;
+  font-size: 1rem;
+  text-align: left;
+  margin-bottom: 2rem;
+}
+table th {
+  background: #e5e5e5;
+}
+table th,
+table td {
+  padding: 1rem 0.75rem;
+  border-bottom: 1px solid grey;
+}
+
+table th:not(:first-child),
+table td:not(:first-child) {
+  border-left: 1px solid grey;
+}
+
+/* additional styles for if we have the clickable rows (an early feature that was moved out of smartColumn for being out of scope) */
+table tr[data-row-clickable] {
+  cursor: pointer;
+}
+table tr[data-row-clickable]:hover {
+  background: #e5e5e5;
+}
+
+table caption {
+  background: #e5e5e5;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.button-wrapper {
+  display: inline-flex;
+  justify-content: space-between;
+  gap: 0.5em;
+}

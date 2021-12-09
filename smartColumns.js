@@ -81,16 +81,16 @@ function smartColumns(target,options) {
   (function() {
     $(target).find('thead th[data-smartcol-fixed]').each(function() {
 
-      //get the index of the actions column:
+      //get the index of this fixed column:
       let thisColumn_index = $(this).index();
 
       //add a span around this column's content in tbody, so we can measure their width (note we can't just measure the cell width, because the browser naturally varies how wide the cell is based on the rest of the table's content):
       $(target).find('tbody tr').each(function() {
-        $(this).find('td').eq(thisColumn_index).wrapInner('<span data-smartcol-actions-wrap></span>');
+        $(this).find('td').eq(thisColumn_index).wrapInner('<span data-smartcol-fixed-wrap></span>');
       });
 
       //measure the padding and width, calculate the fixed width and apply it:
-      let thisColumnContent_width = parseFloat( $(target).find('tbody tr:first-child td').eq(thisColumn_index).find('span[data-smartcol-actions-wrap]').width() );
+      let thisColumnContent_width = parseFloat( $(target).find('tbody tr:first-child td').eq(thisColumn_index).find('span[data-smartcol-fixed-wrap]').width() );
       let thisColumnPaddingLeft_width = parseFloat( $(target).find('tbody tr:first-child td').eq(thisColumn_index).css('padding-left') );
       let thisColumnPaddingRight_width = parseFloat( $(target).find('tbody tr:first-child td').eq(thisColumn_index).css('padding-right') );
       let thisColumn_width = thisColumnContent_width + thisColumnPaddingLeft_width + thisColumnPaddingRight_width;
@@ -107,7 +107,7 @@ function smartColumns(target,options) {
     $(target).find('thead th[data-smartcol-fixed]').each(function() {
       let thisIndex = $(this).index();
       let thisWidth_px = $(this).attr('data-smartcol-fixed');
-      //dynamically change the width of the actions column as the window changes width.
+      //dynamically change the width of the fixed columns as the window changes width.
       let thisWidth_percent = ((100 / widthContainer) * thisWidth_px) + '%';
       $(this).css('width',thisWidth_percent);
       });

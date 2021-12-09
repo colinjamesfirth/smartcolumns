@@ -65,11 +65,11 @@
         $(target).find('thead tr').append('<th data-smartcol-fixed aria-label="Actions"></th>\n');
         $(target).find('tbody tr').each( function() {
           var col1_data = $(this).find('td:first-child').text();
-          var output = '<td class="actions">';
+          var output = '<td class="actions"><span class="button-wrapper">';
           output += '<button data-open-button aria-label="Open record for ' + col1_data + '">Open</button>';
           output += '<button data-edit-button aria-label="Edit record for ' + col1_data + '">Edit</button>';
           //output += '<button data-delete-button aria-label="Delete record for ' + col1_data + '">Delete</button>';
-          output += '</td>\n';
+          output += '</span></td>\n';
           $(this).append(output);
         });
       })();
