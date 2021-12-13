@@ -51,6 +51,11 @@ The first data column is always visible. When the screen narrows, the first colu
 
 Set the maximum number of data columns that can be shown, regardless of how wide the browser window or container. Does not count the first column if `maxVisibleColumns` is set to `true`.
 
+### reEnableAuto
+- Default: false
+
+Adds an 'Auto' option to the selectable column's header select menu. After selecting an option, the column retains that selection if the window resizes. If they click the 'Auto' option the column reverts to automatically switching the column.
+
 ### columnWidthNarrow_rem
 - Default: 5
 - Unit: rem
