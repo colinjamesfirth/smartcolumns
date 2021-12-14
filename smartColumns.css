@@ -12,19 +12,6 @@ MAIN COMPONENT STYLES
   display: block;
   width: 100%;
   /* selectable column */
-  /* column sizes */
-  /*
-  [data-smartcol-size="narrow"] {
-    width: 5rem;
-  }
-  [data-smartcol-size="normal"] {
-    width: 10rem;
-  }
-  [data-smartcol-size="wide"],
-  [data-smartcol-size="stretch"] {
-    width: 15rem;
-  }
-  */
   /* text wrapping */
   /* text alignment */ }
   .smartcol-container table {

@@ -53,24 +53,6 @@ MAIN COMPONENT STYLES
     }
   }
 
-  /* column sizes */
-  /*
-  [data-smartcol-size="narrow"] {
-    width: 5rem;
-  }
-  [data-smartcol-size="normal"] {
-    width: 10rem;
-  }
-  [data-smartcol-size="wide"],
-  [data-smartcol-size="stretch"] {
-    width: 15rem;
-  }
-  */
-  [data-smartcol-size].smartcol-width-auto {
-    //width: auto;
-  }
-
-
   /* text wrapping */
   .smartcol-data-column,
   .smartcol-overflow-normal,
@@ -106,8 +88,6 @@ MAIN COMPONENT STYLES
     text-overflow: normal;
     overflow: hidden;
     white-space: normal;
-
-
   }
 
   /* text alignment */
