@@ -280,33 +280,28 @@ function smartColumns(target,options) {
   /* Build the selectable column */
   (function() {
     //create the select menu:
-    let selectMenu = '<select aria-label="Choose the data for this column">\n';
 
+    let selectOptions = undefined;
     if (o.reEnableAuto === true) {
-      selectMenu += '<option value="auto" >Auto*</option>';
+      selectOptions += '<option value="auto" >Auto*</option>';
     }
-
     $(target).find('thead th[data-smartcol]').each(function() {
       let thisCol = $(this).attr('data-smartcol');
       let t = $(this).text();
-      selectMenu += '<option value="' + thisCol + '">' + t + '</option>\n';
+      selectOptions += '<option value="' + thisCol + '">' + t + '</option>\n';
     });
 
-    selectMenu += '</select>\n';
+    //insert the new th in the thead for the selctable column:
+    $(target).find('thead tr th:nth-child(' + lastDataColumnNth + ')').after('<th data-smartcol-selectable="auto"><select aria-label="Choose the data for this column">\n' + selectOptions + '</select>\n</th>\n');
 
-    //add the new th in the thead for the selctable column:
-    $(target).find('thead tr th:nth-child(' + lastDataColumnNth + ')').after('<th data-smartcol-selectable="auto">' + selectMenu + '</th>\n');
-
-    //add a new td in every tbody row for the selctable column:
+    //insert a new td in every tbody row for the selctable column:
     $(target).find('tbody tr td:nth-child(' + lastDataColumnNth + ')').each( function() {
       $(this).after('<td></td>\n');
     });
 
     /* Add a change event to the select menu to check for user input */
     $(target).on('change','th[data-smartcol-selectable] select',function() {
-
       let thisValue = $(this).val();
-
       if (thisValue === 'auto') {
         $(this).closest('th[data-smartcol-selectable]').attr('data-smartcol-selectable','auto');
         //get the value of the column we need to auto select:
@@ -335,50 +330,31 @@ function smartColumns(target,options) {
   /* SELECTABLE COLUMN: SET */
 
   /* Sets the selectable column's data when we need to put data into it */
-  function selectableColumn_set(target,data_column) {
-
-    //get the index of the selectable column, so we know where to put the data:
-    let selectIndex = $(target).find('th[data-smartcol-selectable]').index();
+  function selectableColumn_set(target,sourceCol) {
 
     let selectTH = $(target).find('th[data-smartcol-selectable]');
-    let sourceTH = $(target).find('th[data-smartcol="' + data_column + '"]');
-    let sourceCol = sourceTH.attr('data-smartcol');
+    let sourceTH = $(target).find('th[data-smartcol="' + sourceCol + '"]');
+    let selectIndex = selectTH.index();
     let sourceIndex = sourceTH.index();
-    let sourceSize = sourceTH.attr('data-smartcol-size');
-    let sourceWrap = sourceTH.attr('data-smartcol-overflow');
-    let sourceAlign = sourceTH.attr('data-smartcol-align');
-    let sourceAuto = sourceTH.hasClass('smartcol-width-auto');
-    let selectTD = undefined;
-    let selectTDdata = undefined;
 
     o.store_colSelected = sourceCol;
-
-    $(selectTH).removeClass('smartcol-width-auto');
-    if (sourceAuto === true) {
-      $(selectTH).addClass('smartcol-width-auto');
-    }
 
     //change the select menu's selected option to the chosen one:
     $(selectTH).find('select option[value="' + sourceCol + '"]').prop('selected', true)
 
-    let selectSize = sizeKeywordConvert(sourceSize);
-    selectSize = sizeUnitConvert(selectSize);
-
-    $(selectTH).attr('data-smartcol-size',sourceSize);
-    $(selectTH).css('width',selectSize);
+    //add the size and width properties to the selectable header cell
+    $(selectTH).attr('data-smartcol-size',columnProperties[sourceCol].size);
+    $(selectTH).css('width',columnProperties[sourceCol].width);
 
     //add styling attributes to the body table cells in the selectable column
     $(target).find('tbody tr').each(function() {
-      selectTD = $(this).find('td').eq(selectIndex);
+      let sourceTDdata = $(this).find('td').eq(sourceIndex).html();
+      let selectTD = $(this).find('td').eq(selectIndex);
 
-      //remove and add the column-wrap:
+      //add the text align and column wrap
+      selectTD.css('text-align',columnProperties[sourceCol].align);
       selectTD.removeClass('smartcol-overflow-normal smartcol-overflow-ellipsis smartcol-overflow-fade smartcol-overflow-wrap');
       selectTD.addClass('smartcol-overflow-' + columnProperties[sourceCol].overflow);
-
-      //add the text align
-      selectTD.css('text-align',columnProperties[sourceCol].align);
-
-      sourceTDdata = $(this).find('td').eq(sourceIndex).html();
 
       selectTD.html(sourceTDdata);
 
@@ -386,8 +362,6 @@ function smartColumns(target,options) {
 
     });
   }
-
-
 
 
 
