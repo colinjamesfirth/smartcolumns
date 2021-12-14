@@ -10,86 +10,195 @@ MAIN COMPONENT SCRIPT
 */
 
 function smartColumns(target,options) {
+
+
+  /* **********************************************************************************
+  *************************************************************************************
+  VARIABLES AND PROPERTIES
+  *************************************************************************************
+  ********************************************************************************** */
+
   let optionDefaults = {
     freezeFirstColumn: true,
     maxVisibleColumns: 100,
     reEnableAuto: false,
-    columnWidthNarrow_rem: 5, //rem
-    columnWidthNormal_rem: 10, //rem
-    columnWidthWide_rem: 15, //rem
+    columnWidthNarrow_rem: '5rem', //rem
+    columnWidthNormal_rem: '10rem', //rem
+    columnWidthWide_rem: '15rem', //rem
     baseFontSize_px: parseFloat(getComputedStyle(document.documentElement).fontSize),
     store_widthTable: 0,
     store_widthContainer: 0,
-    store_widthAvailable: 0
+    store_widthAvailable: 0,
+    store_widthWidestColumn: 0,
+    store_colSelected: 0
   }
   o = { ...optionDefaults, ...(options || {}) };
 
+  let columnProperties = [ ];
 
-  /* Wrap the target table in a block level div so we can measure the width of the containing space (also used for CSS selectors) */
-  if ( !$(target).parent().hasClass('smartcol-container') ) {
-    $(target).wrap('<div class="smartcol-container"></div>');
+
+
+  /* **********************************************************************************
+  *************************************************************************************
+  UTILITY FUNCTIONS
+  *************************************************************************************
+  ********************************************************************************** */
+
+  function sizeUnitConvert(input) {
+    let last1Char = input.slice(-1);
+    let last2Char = input.slice(-2);
+    let last3Char = input.slice(-3);
+    let output = undefined;
+
+    /* is % */
+    if (last1Char == '%') {
+      output = input;
+    }
+    /* is rem */
+    else if (last3Char == 'rem') {
+      output = parseFloat(input) * o.baseFontSize_px;
+    }
+    /* is px */
+    else if (last2Char == 'px') {
+      output = parseInt(input);
+    }
+    /* else is unknown, assume it's px */
+    else {
+      output = parseInt(input);
+    }
+    return output;
   }
 
-  let lastDataColumnIndex = $(target).find('thead th[data-smartcol]').last().index();
-  let lastDataColumnNth = lastDataColumnIndex + 1;
-
-  /* Build the selectable column */
-  (function() {
-    //create the select menu:
-    let selectMenu = '<select aria-label="Choose the data for this column">\n';
-    let counter = 0;
-
-    if (o.reEnableAuto === true) {
-      selectMenu += '<option value="auto" >Auto*</option>';
+  function sizeKeywordConvert(input) {
+    if (input == 'narrow') {
+      output = o.columnWidthNarrow_rem;
     }
+    else if (input == 'normal') {
+      output = o.columnWidthNormal_rem;
+    }
+    else if (input == 'wide') {
+      output = o.columnWidthWide_rem;
+    }
+    else if (input == 'stretch') {
+      output = o.columnWidthWide_rem;
+    }
+    else {
+      output = input;
+    }
+    return output;
+  }
 
-    $(target).find('thead th[data-smartcol]').each(function() {
-      $(this).attr('data-smartcol',counter);
-      let t = $(this).text();
-      selectMenu += '<option value="' + counter + '">' + t + '</option>\n';
-      counter++;
-    });
-    selectMenu += '</select>\n';
 
-    //add the new th in the thead for the selctable column:
-    $(target).find('thead tr th:nth-child(' + lastDataColumnNth + ')').after('<th data-smartcol-selectable data-smartcol-auto>' + selectMenu + '</th>\n');
 
-    //add a new td in every tbody row for the selctable column:
-    $(target).find('tbody tr td:nth-child(' + lastDataColumnNth + ')').each( function() {
-      $(this).after('<td class="smartcol-data-column"></td>\n');
-    });
+  /* **********************************************************************************
+  *************************************************************************************
+  TABLE SETUP (Give all the columns the base properties they need)
+  *************************************************************************************
+  ********************************************************************************** */
 
-    /* Add a change event to the select menu to check for user input */
-    $(target).on('change','th[data-smartcol-selectable] select',function() {
-
-      let data_column = $(this).val();
-
-      if (data_column == 'auto') {
-        //add the data-smartcol-auto attribute, because we want this column to be auto now:
-        $(this).closest('th[data-smartcol-selectable]').attr('data-smartcol-auto','');
-        //get the value of the column we need to auto select:
-        data_column = $(target).find('th[data-smartcol]:hidden').first().attr('data-smartcol');
-        //check the Auto option:
-        if (o.reEnableAuto === true) {
-          $(this).find('option[value="auto"]').html('Auto*');
-        }
-      }
-      else {
-        //remove the data-smartcol-auto attribute, because we want this column to be fixed now:
-        $(this).closest('th[data-smartcol-selectable]').removeAttr('data-smartcol-auto');
-
-        //uncheck the auto option:
-        if (o.reEnableAuto === true) {
-          $(this).find('option[value="auto"]').html('Auto');
-        }
-      }
-
-      //set the column data based on the selection:
-      selectableColumn_set(target,data_column);
-    });
-
+  /* Wrap the target table in a block level div so we can measure the width of the containing space (also used for CSS selectors) */
+  (function() {
+    if ( !$(target).parent().hasClass('smartcol-container') ) {
+      $(target).wrap('<div class="smartcol-container"></div>');
+    }
   })();
 
+  /* For each header column, set an index for use later and add the column to the columnProperties array */
+  (function() {
+    let counter = 0;
+    $(target).find('thead th[data-smartcol]').each(function() {
+      $(this).attr('data-smartcol',counter);
+      columnProperties[counter] = { };
+      counter ++;
+    });
+  })();
+
+  /* For each data column, mark the body rows' tds with a special class  */
+  (function() {
+    $(target).find('thead th[data-smartcol]').each(function() {
+      let thisIndex = $(this).index();
+      $(target).find('tbody tr').each(function() {
+        $(this).find('td').eq(thisIndex).addClass('smartcol-data-column');
+      });
+    });
+  })();
+
+  /* If any data columns don't have a width setting, give them one – making them all 'normal' */
+  (function() {
+    $(target).find('thead th[data-smartcol]:not([data-smartcol-size])').each(function() {
+      $(this).attr('data-smartcol-size','normal');
+    });
+  })();
+
+  /* Give the data columns width */
+  (function() {
+    $(target).find('thead th[data-smartcol]').each(function() {
+      let thisCol = $(this).attr('data-smartcol');
+      let thisValue = $(this).attr('data-smartcol-size');
+
+      // if the column doesn't have a size attribute, then give it one, based on a default of 'normal'
+      if (typeof thisValue === 'undefined' && thisValue === false) {
+        thisValue = 'normal';
+        $(this).attr('data-smartcol-size',thisValue);
+      }
+
+      // if this is not
+      let thisSetting = sizeKeywordConvert(thisValue);
+
+      if (thisSetting != 'auto') {
+        thisWidth = sizeUnitConvert(thisSetting);
+        $(this).css('width',thisWidth);
+        if (thisWidth > o.store_widthWidestColumn) {
+          o.store_widthWidestColumn = thisWidth;
+        }
+      } else {
+        thisWidth = 'auto';
+      }
+      columnProperties[thisCol].size = thisValue;
+      columnProperties[thisCol].width = thisWidth;
+    });
+  })();
+
+  /* Add each columns' content alignment if set */
+  (function() {
+    $(target).find('thead th[data-smartcol]').each(function() {
+      let thisCol = $(this).attr('data-smartcol');
+      let thisIndex = $(this).index();
+      let thisValue = $(this).attr('data-smartcol-align');
+
+      // if the column doesn't have an align attribute, then give it one, based on a default of 'left'
+      if (typeof thisValue === 'undefined' || thisValue === false) {
+        thisValue = 'left';
+      }
+
+      $(this).css('text-align',thisValue);
+      $(target).find('tbody tr').each(function() {
+        $(this).find('td').eq(thisIndex).css('text-align',thisValue);
+      });
+      columnProperties[thisCol].align = thisValue;
+    });
+  })();
+
+  /* Add each columns' wrapping if set */
+  (function() {
+    $(target).find('thead th[data-smartcol]').each(function() {
+      let thisCol = $(this).attr('data-smartcol');
+      let thisIndex = $(this).index();
+      let thisValue = $(this).attr('data-smartcol-overflow');
+
+      // if the column doesn't have a wrapping attribute, then give it one, based on a default of 'normal'
+      if (typeof thisValue === 'undefined' || thisValue === false) {
+        thisValue = 'normal';
+      }
+
+      $(target).find('tbody tr').each(function() {
+        $(this).find('td').eq(thisIndex).addClass('smartcol-overflow-' + thisValue);
+      });
+      columnProperties[thisCol].overflow = thisValue;
+    });
+  })();
+
+  /* Add fixed width columns' widths */
   let widthFixedColumns_sum = 0;
   (function() {
     $(target).find('thead th[data-smartcol-fixed]').each(function() {
@@ -113,7 +222,6 @@ function smartColumns(target,options) {
       widthFixedColumns_sum += thisColumn_width;
     });
   })();
-
   function updateFixedColumnWidths(target,o) {
     let widthContainer = $(target).closest('.smartcol-container').outerWidth();
 
@@ -130,101 +238,182 @@ function smartColumns(target,options) {
     updateFixedColumnWidths(target,o);
   });
 
-  /* If any data columns don't have a width setting, give them one – making them all 'normal' */
-  (function() {
-    $(target).find('thead th[data-smartcol]:not([data-smartcol-size])').each(function() {
-      $(this).attr('data-smartcol-size','normal');
-    });
-  })();
 
+  function stretchColumns(target,o) {
+    let stretchBaseWidth = sizeUnitConvert(o.columnWidthWide_rem);
+    let counter = 0;
+    let sum = 0;
 
-  /* Add each columns' content alignment if set */
-  (function() {
-    $(target).find('thead th[data-smartcol]').each(function() {
-      let thisIndex = $(this).index();
-      $(target).find('tbody tr').each(function() {
-        $(this).find('td').eq(thisIndex).addClass('smartcol-data-column');
-      });
-    });
-  })();
-
-  /* Add each columns' content alignment if set */
-  (function() {
-    $(target).find('thead th[data-smartcol-align]').each(function() {
-      let thisIndex = $(this).index();
-      let thisValue = $(this).attr('data-smartcol-align');
-      let thisSetting = thisValue;
-
-      $(this).addClass('smartcol-align-' + thisSetting);
-      $(target).find('tbody tr').each(function() {
-        $(this).find('td').eq(thisIndex).addClass('smartcol-align-' + thisSetting);
-      });
-    });
-  })();
-
-  /* Add each columns' wrapping if set */
-  (function() {
-    $(target).find('thead th[data-smartcol-overflow]').each(function() {
-      let thisIndex = $(this).index();
-      let thisValue = $(this).attr('data-smartcol-overflow');
-
-      let thisSetting = 'normal';
-      if (typeof thisValue !== 'undefined' && thisValue !== false) {
-        thisSetting = thisValue;
+    $(target).find('thead th[data-smartcol-size="stretch"]').each(function() {
+      if ( $(this).is(':visible') ) {
+        sum += $(this).width();
+        counter ++;
       }
-      $(target).find('tbody tr').each(function() {
-        $(this).find('td').eq(thisIndex).addClass('smartcol-overflow-' + thisSetting);
-      });
     });
+    widthStretch = sum / counter;
+
+    if (widthStretch >= stretchBaseWidth) {
+      $(target).find('thead th[data-smartcol-size="stretch"]').css('width','auto');
+    }
+    else {
+      $(target).find('thead th[data-smartcol-size="stretch"]').css('width',stretchBaseWidth);
+    }
+  }
+
+  //  console.log(columnProperties);
+
+
+
+
+  /* **********************************************************************************
+  *************************************************************************************
+  SELECTABLE COLUMN (setup and behaviours)
+  *************************************************************************************
+  ********************************************************************************** */
+
+  let lastDataColumnIndex = $(target).find('thead th[data-smartcol]').last().index();
+  let lastDataColumnNth = lastDataColumnIndex + 1;
+
+
+  /* SELECTABLE COLUMN: SETUP */
+
+  /* Build the selectable column */
+  (function() {
+    //create the select menu:
+    let selectMenu = '<select aria-label="Choose the data for this column">\n';
+
+    if (o.reEnableAuto === true) {
+      selectMenu += '<option value="auto" >Auto*</option>';
+    }
+
+    $(target).find('thead th[data-smartcol]').each(function() {
+      let thisCol = $(this).attr('data-smartcol');
+      let t = $(this).text();
+      selectMenu += '<option value="' + thisCol + '">' + t + '</option>\n';
+    });
+
+    selectMenu += '</select>\n';
+
+    //add the new th in the thead for the selctable column:
+    $(target).find('thead tr th:nth-child(' + lastDataColumnNth + ')').after('<th data-smartcol-selectable="auto">' + selectMenu + '</th>\n');
+
+    //add a new td in every tbody row for the selctable column:
+    $(target).find('tbody tr td:nth-child(' + lastDataColumnNth + ')').each( function() {
+      $(this).after('<td></td>\n');
+    });
+
+    /* Add a change event to the select menu to check for user input */
+    $(target).on('change','th[data-smartcol-selectable] select',function() {
+
+      let thisValue = $(this).val();
+
+      if (thisValue === 'auto') {
+        $(this).closest('th[data-smartcol-selectable]').attr('data-smartcol-selectable','auto');
+        //get the value of the column we need to auto select:
+        sourceCol = $(target).find('th[data-smartcol]:hidden').first().attr('data-smartcol');
+        //check the Auto option:
+        if (o.reEnableAuto === true) {
+          $(this).find('option[value="auto"]').html('Auto*');
+        }
+      }
+      else {
+        $(this).closest('th[data-smartcol-selectable]').attr('data-smartcol-selectable','');
+        sourceCol = thisValue;
+        //uncheck the auto option:
+        if (o.reEnableAuto === true) {
+          $(this).find('option[value="auto"]').html('Auto');
+        }
+      }
+
+      //set the column data based on the selection:
+      selectableColumn_set(target,sourceCol);
+    });
+
   })();
 
-  /* convert rem units to pixel equivalents */
-  function rem2px(rem) {
-    let px = (o.columnWidthWide_rem * o.baseFontSize_px);
-    return px;
+
+  /* SELECTABLE COLUMN: SET */
+
+  /* Sets the selectable column's data when we need to put data into it */
+  function selectableColumn_set(target,data_column) {
+
+    //get the index of the selectable column, so we know where to put the data:
+    let selectIndex = $(target).find('th[data-smartcol-selectable]').index();
+
+    let selectTH = $(target).find('th[data-smartcol-selectable]');
+    let sourceTH = $(target).find('th[data-smartcol="' + data_column + '"]');
+    let sourceCol = sourceTH.attr('data-smartcol');
+    let sourceIndex = sourceTH.index();
+    let sourceSize = sourceTH.attr('data-smartcol-size');
+    let sourceWrap = sourceTH.attr('data-smartcol-overflow');
+    let sourceAlign = sourceTH.attr('data-smartcol-align');
+    let sourceAuto = sourceTH.hasClass('smartcol-width-auto');
+    let selectTD = undefined;
+    let selectTDdata = undefined;
+
+    o.store_colSelected = sourceCol;
+
+    $(selectTH).removeClass('smartcol-width-auto');
+    if (sourceAuto === true) {
+      $(selectTH).addClass('smartcol-width-auto');
+    }
+
+    //change the select menu's selected option to the chosen one:
+    $(selectTH).find('select option[value="' + sourceCol + '"]').prop('selected', true)
+
+    let selectSize = sizeKeywordConvert(sourceSize);
+    selectSize = sizeUnitConvert(selectSize);
+
+    $(selectTH).attr('data-smartcol-size',sourceSize);
+    $(selectTH).css('width',selectSize);
+
+    //add styling attributes to the body table cells in the selectable column
+    $(target).find('tbody tr').each(function() {
+      selectTD = $(this).find('td').eq(selectIndex);
+
+      //remove and add the column-wrap:
+      selectTD.removeClass('smartcol-overflow-normal smartcol-overflow-ellipsis smartcol-overflow-fade smartcol-overflow-wrap');
+      selectTD.addClass('smartcol-overflow-' + columnProperties[sourceCol].overflow);
+
+      //add the text align
+      selectTD.css('text-align',columnProperties[sourceCol].align);
+
+      sourceTDdata = $(this).find('td').eq(sourceIndex).html();
+
+      selectTD.html(sourceTDdata);
+
+      stretchColumns(target,o);
+
+    });
   }
+
+
+
+
+
+  /* **********************************************************************************
+  *************************************************************************************
+  COLUMN HIDING
+  *************************************************************************************
+  ********************************************************************************** */
 
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
   function hideDataColumns(target,o,lastDataColumnNth,widthFixedColumns_sum) {
-    let widthTable = $(target).outerWidth();
     let widthContainer = $(target).closest('.smartcol-container').width();
+    let widthTable = $(target).outerWidth();
     let firstHideableColumnNth = 1;
     let counter_visible = 1;
     let widthFirstColumn = 0;
 
+    /* Work out how much space we have available */
     if (o.freezeFirstColumn === true) {
       firstHideableColumnNth = 2;
-      let firstColumnSizeKeyword = $(target).find('thead th[data-column]').first().attr('data-smartcol-size');
-      if (firstColumnSizeKeyword == 'stretch') {
-        widthFirstColumn = rem2px(o.columnWidthWide_rem) + 1;
-      }
-      else if (firstColumnSizeKeyword == 'narrow') {
-        widthFirstColumn = rem2px(o.columnWidthNarrow_rem) + 1;
-      }
-      else if (firstColumnSizeKeyword == 'normal') {
-        widthFirstColumn = rem2px(o.columnWidthNormal_rem) + 1;
-      }
-      else if (firstColumnSizeKeyword == 'wide') {
-        widthFirstColumn = rem2px(o.columnWidthWide_rem) + 1;
-      }
+      let firstColumnSizeKeyword = $(target).find('thead th[data-smartcol]').first().attr('data-smartcol-size');
+      let widthFirstColumn = sizeKeywordConvert(firstColumnSizeKeyword);
+      widthFirstColumn = sizeUnitConvert(widthFirstColumn);
     }
 
-    let widestColumn = null;
-    if ( $(target).find('thead th[data-smartcol-size="stretch"]').length ) {
-      widestColumn = rem2px(o.columnWidthWide_rem) + 1;
-    }
-    else if ( $(target).find('thead th[data-smartcol-size="wide"]').length ) {
-      widestColumn = rem2px(o.columnWidthWide_rem) + 1;
-    }
-    else if ( $(target).find('thead th[data-smartcol-size="normal"]').length ) {
-      widestColumn = rem2px(o.columnWidthNormal_rem) + 1;
-    }
-    else if ( $(target).find('thead th[data-smartcol-size="narrow"]').length ) {
-      widestColumn = rem2px(o.columnWidthNarrow_rem) + 1;
-    }
-    let widthReservedForSelectColumn = widestColumn;
-
-    let widthFixedColumns = widthFirstColumn + widthReservedForSelectColumn + widthFixedColumns_sum;
+    let widthFixedColumns = widthFirstColumn + o.store_widthWidestColumn + widthFixedColumns_sum;
     let widthAvailable = widthContainer - widthFixedColumns;
 
     o.store_widthTable = widthTable;
@@ -235,28 +424,20 @@ function smartColumns(target,options) {
     let sum = 0;
     let sum_visible = 0;
 
+    /* loop through each column and see if we should be showing or hiding it */
     $(target).find('thead th[data-smartcol]').each( function() {
+
+      /* clear and set variables */
+      $(target).find('th[data-smartcol-size]').removeClass('smartcol-width-auto');
       let columnSize = $(this).attr('data-smartcol-size');
       let cellWidth = 0;
       let thisIndex = $(this).index();
 
-      if (columnSize == 'stretch') {
-        cellWidth = rem2px(o.columnWidthWide_rem) + 1;
-      }
-      else if (columnSize == 'narrow') {
-        cellWidth = rem2px(o.columnWidthNarrow_rem) + 1;
-      }
-      else if (columnSize == 'normal') {
-        cellWidth = rem2px(o.columnWidthNormal_rem) + 1;
-      }
-      else if (columnSize == 'wide') {
-        cellWidth = rem2px(o.columnWidthWide_rem) + 1;
-      }
+      cellWidth = sizeKeywordConvert(columnSize);
+      cellWidth = sizeUnitConvert(cellWidth);
 
       //add this columns reference cell width to the sum of columns evaluated so far"
       sum += cellWidth;
-
-      $(target).find('th[data-smartcol-size]').removeClass('smartcol-width-auto');
 
       //if this is the first column, and we've chosen to freeze it, then show it regardless of anything else:
       if ((counter === 0) && (o.freezeFirstColumn === true)) {
@@ -290,7 +471,7 @@ function smartColumns(target,options) {
         })
       }
 
-      //else this must be a column we can show
+      //else this must be a column we can show:
       else {
         $(this).show();
         $(target).find('tbody tr').each( function() {
@@ -302,108 +483,35 @@ function smartColumns(target,options) {
       counter ++;
       counter_visible ++;
 
-      if (widthAvailable < sum_visible) {
-        $(target).find('th[data-smartcol-size]').addClass('smartcol-width-auto');
-      } else {
-        $(target).find('th[data-smartcol-size]').removeClass('smartcol-width-auto');
-        stretchColumns(target,o);
-      }
-
     });
+
+    if ( $(target).find('thead th[data-smartcol-selectable]').attr('data-smartcol-selectable') === 'auto' ) {
+      let firstHidden = $(target).find('thead th:hidden:first').attr('data-smartcol');
+      selectableColumn_set(target,firstHidden);
+    }
+
+    //check if we've run out of space to show the columns at their natural widths and make them all auto if so
+    if (widthAvailable < sum_visible) {
+      $(target).find('thead th[data-smartcol]').each( function() {
+        $(this).css('width','auto');
+      });
+      $(target).find('thead th[data-smartcol-selectable]').css('width','auto');
+    } else {
+      $(target).find('thead th[data-smartcol]').each( function() {
+        let thisIndex = $(this).attr('data-smartcol');
+        let thisSize = columnProperties[thisIndex].width;
+        $(this).css('width',thisSize);
+        stretchColumns(target,o);
+      });
+      let sourceCol = o.store_colSelected;
+      let sourceWidth = columnProperties[sourceCol].width;
+      $(target).find('thead th[data-smartcol-selectable]').css('width',sourceWidth);
+    }
   }
   hideDataColumns(target,o,lastDataColumnNth,widthFixedColumns_sum);
   $(window).resize( function() {
     hideDataColumns(target,o,lastDataColumnNth,widthFixedColumns_sum);
   });
 
-
-  /* Automatically set the selectable column */
-  /* If selectable column is set to auto (default on page load), show the data for the first hidden column. This dynamically changes the data in the selectable column as data columns hide and show. Run at page load and on window resize */
-  function selectableColumn_auto(target) {
-    let auto = $(target).find('th[data-smartcol-selectable]').attr('data-smartcol-auto');
-    if (typeof auto !== 'undefined' && auto !== false) {
-      let firstHidden = $(target).find('thead th:hidden:first').attr('data-smartcol');
-      selectableColumn_set(target,firstHidden);
-    }
-  }
-  selectableColumn_auto(target);
-  $(window).resize( function() {
-    selectableColumn_auto(target);
-  });
-
-
-  function stretchColumns(target,o) {
-    let stretchBaseWidth = rem2px(o.columnWidthWide_rem) + 1;
-    let counter = 0;
-    let sum = 0;
-
-    $(target).find('thead th[data-smartcol-size="stretch"]').each(function() {
-      if ( $(this).is(':visible') ) {
-        sum += $(this).width();
-        counter ++;
-      }
-    });
-    widthStretch = sum / counter;
-
-    if (widthStretch >= stretchBaseWidth) {
-      $(target).find('thead th[data-smartcol-size="stretch"]').addClass('smartcol-width-auto');
-    }
-  }
-
-
-  /* Sets the selectable column's data when we need to put data into it */
-  function selectableColumn_set(target,data_column) {
-
-    //get the index of the selectable column, so we know where to put the data:
-    let selectIndex = $(target).find('th[data-smartcol-selectable]').index();
-
-    let selectTH = $(target).find('th[data-smartcol-selectable]');
-    let sourceTH = $(target).find('th[data-smartcol="' + data_column + '"]');
-    let sourceRef = sourceTH.attr('data-smartcol');
-    let sourceIndex = sourceTH.index();
-    let sourceSize = sourceTH.attr('data-smartcol-size');
-    let sourceWrap = sourceTH.attr('data-smartcol-overflow');
-    let sourceAlign = sourceTH.attr('data-smartcol-align');
-    let sourceAuto = sourceTH.hasClass('smartcol-width-auto');
-    let selectTD = undefined;
-    let selectTDdata = undefined;
-
-    $(selectTH).removeClass('smartcol-width-auto');
-    if (sourceAuto === true) {
-      $(selectTH).addClass('smartcol-width-auto');
-    }
-
-    //change the select menu's selected option to the chosen one:
-    //$(selectTH).find('select option').removeAttr('selected'); //remove existing selected first
-    //$(selectTH).find('select option[value="' + sourceRef + '"]').attr('selected', 'selected');
-    $(selectTH).find('select option[value="' + sourceRef + '"]').prop('selected', true)
-
-    //change the select column's size keyword to the correct value for the selected data column:
-    $(selectTH).attr('data-smartcol-size',sourceSize);
-
-    //add styling attributes to the body table cells in the selectable column
-    $(target).find('tbody tr').each(function() {
-      selectTD = $(this).find('td').eq(selectIndex);
-
-      //remove and add the column-wrap:
-      selectTD.removeClass('smartcol-overflow-normal smartcol-overflow-ellipsis smartcol-overflow-fade smartcol-overflow-wrap');
-      if (typeof sourceWrap !== 'undefined' && sourceWrap !== false) {
-        selectTD.addClass('smartcol-overflow-' + sourceWrap);
-      }
-
-      //remove and add the center alignment:
-      selectTD.removeClass('smartcol-align-left smartcol-align-center smartcol-align-right');
-      if (typeof sourceAlign !== 'undefined' && sourceAlign !== false) {
-        selectTD.addClass('smartcol-align-' + sourceAlign);
-      }
-
-      sourceTDdata = $(this).find('td').eq(sourceIndex).html();
-
-      selectTD.html(sourceTDdata);
-
-      stretchColumns(target,o);
-
-    });
-  }
 
 } //ends smartColumns initialisation

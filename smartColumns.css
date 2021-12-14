@@ -2,7 +2,7 @@
 SmartColumns
 by Colin James Firth
 https://github.com/colinjamesfirth/smartcolumns
-verson 1.4
+verson 1.3
 */
 /*
 MAIN COMPONENT STYLES
@@ -13,6 +13,18 @@ MAIN COMPONENT STYLES
   width: 100%;
   /* selectable column */
   /* column sizes */
+  /*
+  [data-smartcol-size="narrow"] {
+    width: 5rem;
+  }
+  [data-smartcol-size="normal"] {
+    width: 10rem;
+  }
+  [data-smartcol-size="wide"],
+  [data-smartcol-size="stretch"] {
+    width: 15rem;
+  }
+  */
   /* text wrapping */
   /* text alignment */ }
   .smartcol-container table {
@@ -41,15 +53,6 @@ MAIN COMPONENT STYLES
       background: transparent;
       font-weight: inherit;
       font-size: inherit; }
-  .smartcol-container [data-smartcol-size="narrow"] {
-    width: 5rem; }
-  .smartcol-container [data-smartcol-size="normal"] {
-    width: 10rem; }
-  .smartcol-container [data-smartcol-size="wide"],
-  .smartcol-container [data-smartcol-size="stretch"] {
-    width: 15rem; }
-  .smartcol-container [data-smartcol-size].smartcol-width-auto {
-    width: auto; }
   .smartcol-container .smartcol-data-column,
   .smartcol-container .smartcol-overflow-normal,
   .smartcol-container .smartcol-overflow-ellipsis {
@@ -95,5 +98,3 @@ MAIN COMPONENT STYLES
   .smartcol-container .smartcol-overflow-none {
     overflow: hidden;
     text-overflow: clip; }
-
-/*# sourceMappingURL=smartColumns.css.map */

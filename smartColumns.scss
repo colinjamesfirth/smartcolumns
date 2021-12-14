@@ -54,6 +54,7 @@ MAIN COMPONENT STYLES
   }
 
   /* column sizes */
+  /*
   [data-smartcol-size="narrow"] {
     width: 5rem;
   }
@@ -64,9 +65,11 @@ MAIN COMPONENT STYLES
   [data-smartcol-size="stretch"] {
     width: 15rem;
   }
+  */
   [data-smartcol-size].smartcol-width-auto {
-    width: auto;
+    //width: auto;
   }
+
 
   /* text wrapping */
   .smartcol-data-column,

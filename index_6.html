@@ -1,0 +1,162 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+
+    <script>
+
+  $(document).ready(function() {
+
+    a = $('#a').width();
+    b = $('#b').width();
+    c = $('#c').width();
+
+    s = a + b + c;
+
+    console.log(s);
+
+
+
+
+  });
+    </script>
+
+    <style>
+
+  html {
+    font-size: 20px;
+  }
+
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    background: pink;
+    margin: 1rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    aspect-ratio: 1/0.5;
+    margin-bottom: 2rem;
+  }
+  th,
+  td {
+    border: 1px solid black;
+    padding: 1rem;
+    text-align: left;
+
+  }
+      </style>
+  </head>
+
+  <body>
+
+  <div id="a" style="width: 10rem;">a</div>
+  <div id="b" style="width: 100px;">b</div>
+  <div id="c" style="width: 18ch">c</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>One</th>
+        <th>Two</th>
+        <th>Three</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A</td>
+        <td>B</td>
+        <td>C</td>
+      </tr>
+      <tr>
+        <td>A</td>
+        <td>B</td>
+        <td>C</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead>
+      <tr>
+        <th>One</th>
+        <th>Two</th>
+        <th>Three</th>
+        <th>Four</th>
+        <th>Five</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A</td>
+        <td>B</td>
+        <td>C</td>
+        <td>D</td>
+        <td>E</td>
+      </tr>
+      <tr>
+        <td>A</td>
+        <td>B</td>
+        <td>C</td>
+        <td>D</td>
+        <td>E</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead>
+      <tr>
+        <th>One</th>
+        <th>Two</th>
+        <th>Three</th>
+        <th>Four</th>
+        <th>Five</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A</td>
+        <td>B</td>
+        <td>C</td>
+        <td>D</td>
+        <td>E</td>
+      </tr>
+      <tr>
+        <td>A</td>
+        <td>B</td>
+        <td>C</td>
+        <td>D</td>
+        <td>E</td>
+      </tr>
+      <tr>
+        <td>A</td>
+        <td>B</td>
+        <td>C</td>
+        <td>D</td>
+        <td>E</td>
+      </tr>
+      <tr>
+        <td>A</td>
+        <td>B</td>
+        <td>C</td>
+        <td>D</td>
+        <td>E</td>
+      </tr>
+      <tr>
+        <td>A</td>
+        <td>B</td>
+        <td>C</td>
+        <td>D</td>
+        <td>E</td>
+      </tr>
+    </tbody>
+  </table>
+
+  </body>
+</html>
