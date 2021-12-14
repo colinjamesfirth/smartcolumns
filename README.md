@@ -1,7 +1,7 @@
 # SmartColumns
 
 - Created by: Colin James Firth
-- Version: 1.3
+- Version: 1.5
 - Date: 7 December 2021
 - Repo: https://github.com/colinjamesfirth/responsive-table
 
