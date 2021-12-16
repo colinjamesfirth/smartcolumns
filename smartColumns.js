@@ -23,7 +23,7 @@ function smartColumns(target,options) {
     maxVisibleColumns: 100,
     reEnableAuto: false,
     columnWidthNarrow: '5rem',
-    columnWidthNormal: '100rem',
+    columnWidthNormal: '10rem',
     columnWidthWide: '15rem',
     baseFontSize_px: parseFloat(getComputedStyle(document.documentElement).fontSize),
     store_widthTable: 0,
@@ -50,12 +50,8 @@ function smartColumns(target,options) {
     let last3Char = input.slice(-3);
     let output = undefined;
 
-    /* is % */
-    if (last1Char == '%') {
-      output = input;
-    }
     /* is rem */
-    else if (last3Char == 'rem') {
+    if (last3Char == 'rem') {
       output = parseFloat(input) * o.baseFontSize_px;
     }
     /* is px */
