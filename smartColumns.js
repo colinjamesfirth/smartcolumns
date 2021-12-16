@@ -22,9 +22,9 @@ function smartColumns(target,options) {
     freezeFirstColumn: true,
     maxVisibleColumns: 100,
     reEnableAuto: false,
-    columnWidthNarrow_rem: '5rem', //rem
-    columnWidthNormal_rem: '10rem', //rem
-    columnWidthWide_rem: '15rem', //rem
+    columnWidthNarrow: '5rem',
+    columnWidthNormal: '100rem',
+    columnWidthWide: '15rem',
     baseFontSize_px: parseFloat(getComputedStyle(document.documentElement).fontSize),
     store_widthTable: 0,
     store_widthContainer: 0,
@@ -71,16 +71,16 @@ function smartColumns(target,options) {
 
   function sizeKeywordConvert(input) {
     if (input == 'narrow') {
-      output = o.columnWidthNarrow_rem;
+      output = o.columnWidthNarrow;
     }
     else if (input == 'normal') {
-      output = o.columnWidthNormal_rem;
+      output = o.columnWidthNormal;
     }
     else if (input == 'wide') {
-      output = o.columnWidthWide_rem;
+      output = o.columnWidthWide;
     }
     else if (input == 'stretch') {
-      output = o.columnWidthWide_rem;
+      output = o.columnWidthWide;
     }
     else {
       output = input;
@@ -144,7 +144,6 @@ function smartColumns(target,options) {
 
       // if this is not
       let thisSetting = sizeKeywordConvert(thisValue);
-
       if (thisSetting != 'auto') {
         thisWidth = sizeUnitConvert(thisSetting);
         $(this).css('width',thisWidth);
@@ -240,7 +239,7 @@ function smartColumns(target,options) {
 
 
   function stretchColumns(target,o) {
-    let stretchBaseWidth = sizeUnitConvert(o.columnWidthWide_rem);
+    let stretchBaseWidth = sizeUnitConvert(o.columnWidthWide);
     let counter = 0;
     let sum = 0;
 
@@ -337,8 +336,6 @@ function smartColumns(target,options) {
     let selectIndex = selectTH.index();
     let sourceIndex = sourceTH.index();
 
-    o.store_colSelected = sourceCol;
-
     //change the select menu's selected option to the chosen one:
     $(selectTH).find('select option[value="' + sourceCol + '"]').prop('selected', true)
 
@@ -361,6 +358,9 @@ function smartColumns(target,options) {
       stretchColumns(target,o);
 
     });
+
+    o.store_colSelected = sourceCol;
+
   }
 
 
@@ -389,11 +389,6 @@ function smartColumns(target,options) {
 
     let widthFixedColumns = widthFirstColumn + o.store_widthWidestColumn + widthFixedColumns_sum;
     let widthAvailable = widthContainer - widthFixedColumns;
-
-    o.store_widthTable = widthTable;
-    o.store_widthContainer = widthContainer;
-    o.store_widthAvailable = widthAvailable;
-
     let counter = 0;
     let sum = 0;
     let sum_visible = 0;
@@ -481,6 +476,11 @@ function smartColumns(target,options) {
       let sourceWidth = columnProperties[sourceCol].width;
       $(target).find('thead th[data-smartcol-selectable]').css('width',sourceWidth);
     }
+
+    o.store_widthTable = widthTable;
+    o.store_widthContainer = widthContainer;
+    o.store_widthAvailable = widthAvailable;
+
   }
   hideDataColumns(target,o,lastDataColumnNth,widthFixedColumns_sum);
   $(window).resize( function() {
