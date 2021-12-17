@@ -40,6 +40,12 @@ MAIN COMPONENT STYLES
       background: transparent;
       font-weight: inherit;
       font-size: inherit; }
+      .smartcol-container [data-smartcol-selectable] select option {
+        background: white;
+        color: initial; }
+        .smartcol-container [data-smartcol-selectable] select option:hover, .smartcol-container [data-smartcol-selectable] select option:focus {
+          background: initial;
+          color: initial; }
   .smartcol-container .smartcol-data-column,
   .smartcol-container .smartcol-overflow-normal,
   .smartcol-container .smartcol-overflow-ellipsis {

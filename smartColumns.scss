@@ -50,6 +50,15 @@ MAIN COMPONENT STYLES
       background: transparent;
       font-weight: inherit;
       font-size: inherit;
+      option {
+        background: white;
+        color: initial;
+        &:hover,
+        &:focus {
+          background: initial;
+          color: initial;
+        }
+      }
     }
   }
 
