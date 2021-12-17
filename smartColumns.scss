@@ -50,7 +50,6 @@ MAIN COMPONENT STYLES
       justify-content: stretch;
       width: 100%;
       overflow: hidden;
-      outline: 1px dashed red;
       background: inherit;
       font-size: inherit;
       font-style: inherit;
@@ -100,6 +99,7 @@ MAIN COMPONENT STYLES
         font-size: inherit;
         &:hover,
         &:focus {
+          cursor: pointer;
           & + .smart-col-select-label {
             background: #333;
             color: white;

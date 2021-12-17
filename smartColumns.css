@@ -39,7 +39,6 @@ MAIN COMPONENT STYLES
       justify-content: stretch;
       width: 100%;
       overflow: hidden;
-      outline: 1px dashed red;
       background: inherit;
       font-size: inherit;
       font-style: inherit;
@@ -85,11 +84,13 @@ MAIN COMPONENT STYLES
         border: none;
         outline: none;
         font-size: inherit; }
-        .smartcol-container [data-smartcol-selectable] .smartcol-select-container select:hover + .smart-col-select-label, .smartcol-container [data-smartcol-selectable] .smartcol-select-container select:focus + .smart-col-select-label {
-          background: #333;
-          color: white; }
-          .smartcol-container [data-smartcol-selectable] .smartcol-select-container select:hover + .smart-col-select-label:after, .smartcol-container [data-smartcol-selectable] .smartcol-select-container select:focus + .smart-col-select-label:after {
-            border-color: white; }
+        .smartcol-container [data-smartcol-selectable] .smartcol-select-container select:hover, .smartcol-container [data-smartcol-selectable] .smartcol-select-container select:focus {
+          cursor: pointer; }
+          .smartcol-container [data-smartcol-selectable] .smartcol-select-container select:hover + .smart-col-select-label, .smartcol-container [data-smartcol-selectable] .smartcol-select-container select:focus + .smart-col-select-label {
+            background: #333;
+            color: white; }
+            .smartcol-container [data-smartcol-selectable] .smartcol-select-container select:hover + .smart-col-select-label:after, .smartcol-container [data-smartcol-selectable] .smartcol-select-container select:focus + .smart-col-select-label:after {
+              border-color: white; }
   .smartcol-container .smartcol-data-column,
   .smartcol-container .smartcol-overflow-normal,
   .smartcol-container .smartcol-overflow-ellipsis {
