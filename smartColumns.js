@@ -287,7 +287,7 @@ function smartColumns(target,options) {
     });
 
     //insert the new th in the thead for the selctable column:
-    $(target).find('thead tr th:nth-child(' + lastDataColumnNth + ')').after('<th data-smartcol-selectable="auto"><select aria-label="Choose the data for this column">\n' + selectOptions + '</select>\n</th>\n');
+    $(target).find('thead tr th:nth-child(' + lastDataColumnNth + ')').after('<th data-smartcol-selectable="auto"><div class="smartcol-select-container"><select aria-label="Choose the data for this column">\n' + selectOptions + '</select><div class="smart-col-select-label"></div></div>\n</th>\n');
 
     //insert a new td in every tbody row for the selctable column:
     $(target).find('tbody tr td:nth-child(' + lastDataColumnNth + ')').each( function() {
@@ -333,7 +333,9 @@ function smartColumns(target,options) {
     let sourceIndex = sourceTH.index();
 
     //change the select menu's selected option to the chosen one:
-    $(selectTH).find('select option[value="' + sourceCol + '"]').prop('selected', true)
+    $(selectTH).find('select option[value="' + sourceCol + '"]').prop('selected', true);
+    let selectLabel = $(selectTH).find('select option[value="' + sourceCol + '"]').text();
+    $(selectTH).find('.smart-col-select-label').text(selectLabel);
 
     //add the size and width properties to the selectable header cell
     $(selectTH).attr('data-smartcol-size',columnProperties[sourceCol].size);

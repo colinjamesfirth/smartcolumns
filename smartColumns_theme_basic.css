@@ -85,12 +85,12 @@ body {
 }
 
 /* selectable column */
-.smartcol-container [data-smartcol-selectable] select {
+x.smartcol-container [data-smartcol-selectable] select {
   padding-bottom: 0.25rem;
   border-top: 0.25rem solid grey;
 }
-.smartcol-container [data-smartcol-selectable] select:hover,
-.smartcol-container [data-smartcol-selectable] select:focus {
+x.smartcol-container [data-smartcol-selectable] select:hover,
+x.smartcol-container [data-smartcol-selectable] select:focus {
   background: #666666;
   border-color: #666666;
   color: white;
