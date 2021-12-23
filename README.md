@@ -34,7 +34,7 @@ You can change default variables for various options during initialisation:
     freezeFirstColumn: true,
     hasActionsColumn: true,
     maxVisibleColumns: 100,
-    columnWidthNarrow_rem: 5,
+    columnWidthNarrow: 5,
     columnWidthNormal_rem: 10,
     columnWidthWide_rem: 15,
     baseFontSize_px: {auto based on the document's base font size}
@@ -56,7 +56,7 @@ Set the maximum number of data columns that can be shown, regardless of how wide
 
 Adds an 'Auto' option to the selectable column's header select menu. After selecting an option, the column retains that selection if the window resizes. If they click the 'Auto' option the column reverts to automatically switching the column.
 
-### columnWidthNarrow_rem
+### columnWidthNarrow
 - Default: 5
 - Unit: rem
 

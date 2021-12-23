@@ -25,6 +25,7 @@ function smartColumns(target,options) {
     columnWidthNarrow: '5rem',
     columnWidthNormal: '10rem',
     columnWidthWide: '15rem',
+    referenceContainer: '.smartcol-container',
     baseFontSize_px: parseFloat(getComputedStyle(document.documentElement).fontSize),
     store_widthTable: 0,
     store_widthContainer: 0,
@@ -218,8 +219,9 @@ function smartColumns(target,options) {
     });
   })();
   function updateFixedColumnWidths(target,o) {
-    let widthContainer = $(target).closest('.smartcol-container').outerWidth();
-
+    $(target).hide();
+    let widthContainer = $(target).closest(o.referenceContainer).outerWidth();
+    $(target).show();
     $(target).find('thead th[data-smartcol-fixed]').each(function() {
       let thisIndex = $(this).index();
       let thisWidth_px = $(this).attr('data-smartcol-fixed');
@@ -371,7 +373,9 @@ function smartColumns(target,options) {
 
   /* Hides columns from right to left depending on the amout of available space, making sure the minimum width of columns is always honoured. Run at page load and on window resize */
   function hideDataColumns(target,o,lastDataColumnNth,widthFixedColumns_sum) {
-    let widthContainer = $(target).closest('.smartcol-container').width();
+    $(target).hide();
+    let widthContainer = $(target).hide().closest(o.referenceContainer).width();
+    $(target).show();
     let widthTable = $(target).outerWidth();
     let firstHideableColumnNth = 1;
     let counter_visible = 1;
